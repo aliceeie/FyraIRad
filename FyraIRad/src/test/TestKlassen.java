@@ -7,7 +7,7 @@ public class TestKlassen {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		//Lite kod....
+		//Lite kod....2
 	}
 
 }
