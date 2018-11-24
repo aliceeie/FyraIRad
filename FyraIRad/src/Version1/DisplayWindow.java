@@ -7,7 +7,7 @@ public class DrawRect {
 	    JFrame window = new JFrame();
 	    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    window.setBounds(10, 10, 720, 660);
-	    window.getContentPane().add(new MyCanvas());
+	    window.getContentPane().add(new SpelPlan());
 	    window.setVisible(true);
 	  }
 	}
