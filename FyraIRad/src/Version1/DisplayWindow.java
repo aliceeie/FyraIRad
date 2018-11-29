@@ -1,13 +1,16 @@
 package Version1;
 
 import javax.swing.JFrame;
+import java.awt.Graphics;
 
 public class DisplayWindow {
-	  public static void main(String[] a) {
+	
+	  public void show(Graphics g) {
 	    JFrame window = new JFrame();
+	    //GameBoard board = new GameBoard();
 	    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    window.setBounds(10, 10, 720, 660);
-	    window.getContentPane().add(new Spelplan());
+	    window.setBounds(10, 10, 730, 660);
+		window.getContentPane().add(new GameBoard());
 	    window.setVisible(true);
 	  }
 	}
