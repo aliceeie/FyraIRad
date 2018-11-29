@@ -1,9 +1,9 @@
 package Version1;
 
-import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Color;
 
-public class Circle {
+public class Circle implements Drawable {
 	
 	private Color color;
 	private int radius = 0;
@@ -17,7 +17,8 @@ public class Circle {
 		this.radius = radius;
 	}
 	
-	public void paintCircle(Graphics g){
+	@Override
+	public void paint(Graphics g){
 		g.setColor(color);
 		g.fillOval(x, y, radius, radius);
 	}
