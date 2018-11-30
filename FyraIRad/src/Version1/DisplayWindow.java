@@ -7,7 +7,6 @@ public class DisplayWindow {
 	
 	  public void show(Graphics g) {
 	    JFrame window = new JFrame();
-	    //GameBoard board = new GameBoard();
 	    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    window.setBounds(10, 10, 730, 660);
 		window.getContentPane().add(new GameBoard());

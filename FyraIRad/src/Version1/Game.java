@@ -12,7 +12,7 @@ public class Game {
 		initialize();
 	}
 	
-	public void initialize() {
+	private void initialize() {
 		window = new DisplayWindow();
 		board = new GameBoard();
 		
