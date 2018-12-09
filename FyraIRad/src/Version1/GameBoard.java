@@ -16,11 +16,17 @@ import javax.swing.Timer;
 class GameBoard extends JComponent implements Drawable, ActionListener, KeyListener {
 	
 	private Circle[][] arrayOfCircles;
+	private Circle[][] tile;
+	private Circle redTile;
+	private Circle yellowTile;
 	private Timer timer = new Timer (4,this);
 	private int selectedRow;
+	private Boolean isRed = true;
+	private Boolean move = false;
 	
 	public GameBoard() {
 		arrayOfCircles = new Circle[7][6];
+		tile = new Circle[7][6];
 		createCircles();
 		initializeKeyListener();
 		selectedRow = 0;
@@ -34,6 +40,12 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 		}
 	}
 	
+/*	private void createRedTile() {
+//		for(int y = 0; y < 6; y++){
+			redTile = new Circle(Color.red,20 + 100*selectedRow, 20 + 100*5, 80);
+//		}
+	}*/
+
 	private void initializeKeyListener() {
 		timer = new Timer (10,this);
 		timer.start();
@@ -55,7 +67,17 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 				arrayOfCircles[x][y].paint(g);
 			}
 		}
-	}
+		
+		if(move)
+			if(isRed) {
+				redTile = new Circle(Color.red,20 + 100*selectedRow, 20 + 100*5, 80);
+				redTile.paint(g);
+			}
+			else {
+				yellowTile = new Circle(Color.yellow,20 + 100*selectedRow, 20 + 100*5, 80);
+				yellowTile.paint(g);
+			}
+		}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -66,7 +88,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 			} else {
 				selectedRow += 1;
 			}
-			System.out.println("Ett hopp Ã¥t hÃ¶ger!");
+			System.out.println("Ett hopp åt höger!");
 		}
 		if (keyCode == KeyEvent.VK_LEFT) {
 			if (selectedRow == 0) {
@@ -74,7 +96,11 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 			} else {
 				selectedRow -= 1;
 			}
-			System.out.println("Ett hopp Ã¥t vÃ¤nster!");
+			System.out.println("Ett hopp åt vänster!");
+		}
+		if (keyCode == KeyEvent.VK_DOWN) {
+			move = true;
+			System.out.println("Ett drag registrerat!");
 		}
 	}
 	
@@ -84,7 +110,16 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	}
 
 	@Override
-	public void keyReleased(KeyEvent arg0) {}
+	public void keyReleased(KeyEvent e) {
+		int keyCode = e.getKeyCode();
+		if (keyCode == KeyEvent.VK_DOWN) {
+			move = !move;
+			isRed = !isRed;
+			System.out.println("Släppte nerknappen!");
+		}
+		
+		
+	}
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {}

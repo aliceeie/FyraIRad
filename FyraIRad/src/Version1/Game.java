@@ -18,5 +18,10 @@ public class Game {
 		
 		window.show(g);
 	}
-
+	
+	
+	
+	
+	
+	
 }
