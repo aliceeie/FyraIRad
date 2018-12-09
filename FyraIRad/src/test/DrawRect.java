@@ -9,5 +9,6 @@ public class DrawRect {
 	    window.setBounds(10, 10, 720, 660);
 	    window.getContentPane().add(new MyCanvas());
 	    window.setVisible(true);
+	    
 	  }
 	}

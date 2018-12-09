@@ -3,9 +3,11 @@ package Version1;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Tile implements Drawable{		//Vet inte om vi vill ha spelbrickorna i en separat klass eller i GameBoard
+import javax.swing.JComponent;
 
-	public Tile(int selectedRow) {						//Konstruktör
+public class Tile extends JComponent implements Drawable{		//Vet inte om vi vill ha spelbrickorna i en separat klass eller i GameBoard
+
+	public Tile(int selectedRow) {								//Konstruktör
 		
 		
 	}
