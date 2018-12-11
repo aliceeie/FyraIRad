@@ -12,7 +12,6 @@ public class DisplayWindow {
 	    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    window.setBounds(300, 100, 730, 660);
 		window.getContentPane().add(new GameBoard());
-//		window.getContentPane().add(new Tile());
 	    window.setVisible(true);
 	  }
 	}

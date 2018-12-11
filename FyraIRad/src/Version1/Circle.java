@@ -22,5 +22,9 @@ public class Circle implements Drawable {
 		g.setColor(color);
 		g.fillOval(x, y, radius, radius);
 	}
+	
+	public Color getColor() {
+		return color;
+	}
 
 }

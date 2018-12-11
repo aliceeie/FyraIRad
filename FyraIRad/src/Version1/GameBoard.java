@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -15,43 +16,64 @@ import javax.swing.Timer;
  */
 class GameBoard extends JComponent implements Drawable, ActionListener, KeyListener {
 	
-	private Circle[][] arrayOfCircles;
-	private Circle[][] tile;
-	private Circle redTile;
-	private Circle yellowTile;
+	private Circle whiteCircle;
+	private Circle playersCircle;
+	
+	private ArrayList<ArrayList<Circle>> arrayOfTiles;
+	private ArrayList<Circle> yLed; 
+	private Player player;
+	
 	private Timer timer = new Timer (4,this);
-	private int selectedRow;
-	private Boolean isRed = true;
-	private Boolean move = false;
+	private int selectedRow;	
 	
 	public GameBoard() {
-		arrayOfCircles = new Circle[7][6];
-		tile = new Circle[7][6];
-		createCircles();
-		initializeKeyListener();
+		arrayOfTiles = new ArrayList<ArrayList<Circle>>();	//Sparar alla nya cirklar
+		yLed = new ArrayList<Circle>(); 					//Sparar alla cirklar i varje rad
+		createWhiteCircles();
 		selectedRow = 0;
+		player = new Player(Color.red);
+		initializeKeyListener();
 	}
 	
-	private void createCircles() {
+	private void createWhiteCircles() {
 		for(int y = 0; y < 6; y++){
+			arrayOfTiles.add(yLed);														//Lägger till alla kolumners cirklar i arrayOfTiles
 			for(int x = 0; x < 7; x++){
-				arrayOfCircles[x][y] = new Circle(Color.white,20 + 100*x, 20 + 100*y, 80);
+				whiteCircle = new Circle(Color.white,20 + 100*x, 20 + 100*y, 80);
+				yLed.add(whiteCircle);													//Lägger till 7 vita cirklar i yLed
 			}
-		}
+		}		
 	}
-	
-/*	private void createRedTile() {
-//		for(int y = 0; y < 6; y++){
-			redTile = new Circle(Color.red,20 + 100*selectedRow, 20 + 100*5, 80);
-//		}
-	}*/
 
-	private void initializeKeyListener() {
+	private void initializeKeyListener() {				//Skapar en ny Key Listener
 		timer = new Timer (10,this);
 		timer.start();
 		addKeyListener(this);
         setFocusable (true);
         setFocusTraversalKeysEnabled(false);
+	}
+	
+	public int placeOccupied (int placeToBeChecked) {
+		for(int x = placeToBeChecked; x>=0 ; x--) {
+			if(arrayOfTiles.get(selectedRow).get(x).getColor().equals(Color.white)) {				//Om platsen där vi ska sätta brickan inte är vit måste vi sätta den på en plats över
+				System.out.println("PLACE: " + x );
+				return x;
+			}
+		}
+		System.out.println("PLACEet: " + placeToBeChecked );
+		return placeToBeChecked;				//HÄR MÅSTE VI RETURNERA FELLMEDDELANDE "hela stapeln är full"
+	}
+	
+	public void playersTile(){
+		int y = 5;										//Börjar på 5:e platsen i arrayen (längst ner)
+		int place = 0;
+
+		place = placeOccupied(y);					//Platsen i y-led där spelpjäsen läggs
+		
+		System.out.println("SPELARENS FÄRG " + player.getColor());
+		playersCircle = new Circle(player.getColor(), 20 + 100*selectedRow, 20 + 100*place, 80);		//Skapar en ny cirkel som har spelarens färg på den plats spelaren har valt
+		yLed.add(y, playersCircle);
+		arrayOfTiles.add(selectedRow, yLed);
 	}
 
 	@Override
@@ -62,22 +84,12 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 		g.setColor(Color.cyan);
 		g.fillRect(20 + 100*selectedRow, 20, 80, 580);
 		
-		for(int y = 0; y < 6; y++){
-			for(int x = 0; x < 7; x++){
-				arrayOfCircles[x][y].paint(g);
+		for(ArrayList<Circle> a : arrayOfTiles) {
+			for(Circle c : yLed) {
+				c.paint(g);
 			}
 		}
-		
-		if(move)
-			if(isRed) {
-				redTile = new Circle(Color.red,20 + 100*selectedRow, 20 + 100*5, 80);
-				redTile.paint(g);
-			}
-			else {
-				yellowTile = new Circle(Color.yellow,20 + 100*selectedRow, 20 + 100*5, 80);
-				yellowTile.paint(g);
-			}
-		}
+	}	
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -99,7 +111,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 			System.out.println("Ett hopp åt vänster!");
 		}
 		if (keyCode == KeyEvent.VK_DOWN) {
-			move = true;
+			playersTile();
 			System.out.println("Ett drag registrerat!");
 		}
 	}
@@ -112,13 +124,9 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int keyCode = e.getKeyCode();
-		if (keyCode == KeyEvent.VK_DOWN) {
-			move = !move;
-			isRed = !isRed;
+		if (keyCode == KeyEvent.VK_DOWN) {					//Här ska turen gå över till andra spelaren
 			System.out.println("Släppte nerknappen!");
 		}
-		
-		
 	}
 
 	@Override
