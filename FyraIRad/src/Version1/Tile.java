@@ -12,6 +12,10 @@ public class Tile extends JComponent implements Drawable{		//Vet inte om vi vill
 		
 	}
 
+	public void redCircle(){
+		
+	}
+	
 	public void paint(Graphics g) {
 		g.setColor(Color.red);
 	}
