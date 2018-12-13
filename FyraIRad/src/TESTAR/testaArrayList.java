@@ -4,6 +4,12 @@ import java.util.ArrayList;
 
 import Version1.Circle;
 
+
+/**
+ * 
+ * testkass for att forsta logiken i en tvadimentionell ArrayList
+ *
+ */
 public class testaArrayList {
 
 	
@@ -14,17 +20,19 @@ public class testaArrayList {
 
 		
 		for(int y = 0; y < 6; y++){
-			arrayOfTiles.add(yLed);									//L�gger till alla kolumners cirklar i arrayOfTiles
 			for(int x = 0; x < 7; x++){
 				yLed.add(Integer.toString(x) + "," + Integer.toString(y));										//L�gger till 7 vita cirklar i yLed
 			}
+			arrayOfTiles.add(yLed);									//L�gger till alla kolumners cirklar i arrayOfTiles
 		}
 		
 		
-		for(int y = 0; y < 6; y++){
-			arrayOfTiles.add(yLed);
-			for(int x = 0; x < 7; x++){
-				System.out.print();
+		for(int y = 0; y < 7; y++){
+			for(int x = 0; x < 6; x++){
+				yLed = arrayOfTiles.get(x);
+			}
+			System.out.print(yLed.get(y));
+			
 		}
 		
 
