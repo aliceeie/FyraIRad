@@ -2,6 +2,7 @@ package Version2;
 
 import java.awt.Graphics;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -18,6 +19,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	private Timer timer = new Timer (4,this);
 	private Player player;
 	private int selectedRow;
+	private Boolean gameOver = false;
 
 	public GameBoard() {
 		arrayOfCircles = new Circle[7][6];	//Sparar alla cirklar
@@ -87,7 +89,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 						arrayOfCircles[x+1][y].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x+2][y].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x+3][y].getColor() == playersCircle.getColor()) {
-					System.out.println("VINNARE !!");										//och spelet ska avslutas
+					gameOver = true;
 				}
 			}
 		}
@@ -97,7 +99,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 						arrayOfCircles[x][y+1].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x][y+2].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x][y+3].getColor() == playersCircle.getColor()) {
-					System.out.println("VINNARE !!");										//och spelet ska avslutas
+					gameOver = true;
 				}
 			}
 		}
@@ -107,7 +109,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 						arrayOfCircles[x+1][y-1].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x+2][y-2].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x+3][y-3].getColor() == playersCircle.getColor()) {
-					System.out.println("VINNARE !!");										//och spelet ska avslutas
+					gameOver = true;
 				}
 			}
 		}
@@ -117,11 +119,12 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 						arrayOfCircles[x+1][y+1].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x+2][y+2].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x+3][y+3].getColor() == playersCircle.getColor()) {
-					System.out.println("VINNARE !!");										//och spelet ska avslutas
+					gameOver = true;
 				}
 			}
 		}
 	}
+	
 
 	@Override
 	public void paint(Graphics g) {
@@ -135,6 +138,14 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 			for(int x = 0; x < 7; x++){
 				arrayOfCircles[x][y].paint(g);
 			}
+		}
+		if (gameOver) {											//Om en vinnare har hittats skrivs det ut i samma farg som vinnaren har
+			g.setColor(Color.black);
+			g.fillRect(100, 200, 500, 180);
+			Font font = new Font("SansSerif", Font.PLAIN, 100);
+			g.setFont(font);
+			g.setColor(playersCircle.getColor());
+			g.drawString("Du vann!", 150, 320);
 		}
 	}	
 
