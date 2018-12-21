@@ -6,13 +6,15 @@ public class Game {
 	
 	private Graphics g;
 	private DisplayWindow window;
+	private GameBoard gameBoard;
 	
 	public void start() {
 		initialize();
 	}
 	
 	private void initialize() {
-		window = new DisplayWindow();		
-		window.show(g);
+		gameBoard = new GameBoard();
+		window = new DisplayWindow(gameBoard);		
+		window.show();
 	}
 }
