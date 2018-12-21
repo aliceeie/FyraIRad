@@ -17,12 +17,12 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	private Circle[][] arrayOfCircles;
 	private Timer timer = new Timer (4,this);
 	private Player player;
-	private int selectedRow;
+	private int selectedColumn;
 
 	public GameBoard() {
 		arrayOfCircles = new Circle[7][6];	//Sparar alla cirklar
 		createWhiteCircles();
-		selectedRow = 0;
+		selectedColumn = 0;
 		player = new Player(Color.red);		//Rod spelare borjar
 		initializeKeyListener();
 	}
@@ -56,7 +56,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	}
 	
 	public int getNextEmptyPlace (int y) {
-		while(y > 0 && !(arrayOfCircles[selectedRow][y].getColor().equals(Color.white))){		//Om platsen dar vi ska satta brickan inte ar vit maste vi satta den pa en plats ovanfor (lagre y-varde)
+		while(y > 0 && !(arrayOfCircles[selectedColumn][y].getColor().equals(Color.white))){		//Om platsen dar vi ska satta brickan inte ar vit maste vi satta den pa en plats ovanfor (lagre y-varde)
 			y--;
 		}
 		return y;
@@ -69,12 +69,12 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 		int yStart = 5;																			//Borjar pa 5:e platsen i arrayen (l�ngst ner)
 		int y = getNextEmptyPlace(yStart);														//Platsen i y-led dar spelpjasen laggs
 	
-		playersCircle = new Circle(player.getColor(), 20 + 100*selectedRow, 20 + 100*y, 80);	//Skapar en ny cirkel som har spelarens farg pa den plats spelaren har valt
+		playersCircle = new Circle(player.getColor(), 20 + 100*selectedColumn, 20 + 100*y, 80);	//Skapar en ny cirkel som har spelarens farg pa den plats spelaren har valt
 		
-		System.out.println("X: " + selectedRow);
+		System.out.println("X: " + selectedColumn);
 		System.out.println("Y: " + y);
 
-		arrayOfCircles[selectedRow][y] = playersCircle;											//Platsen med selectedRow som x-varde och y som y-varde ar den plats som spelarens cirkel sparas p�
+		arrayOfCircles[selectedColumn][y] = playersCircle;											//Platsen med selectedColumn som x-varde och y som y-varde ar den plats som spelarens cirkel sparas p�
 	}
 	
 	/**
@@ -126,10 +126,10 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	@Override
 	public void paint(Graphics g) {
 		g.setColor(Color.blue);
-		g.fillRect(10, 10, 700, 600);
+		g.fillRect(10, 10, 700, 600);							//Malar rektangeln som är spelplanen
 		
 		g.setColor(Color.cyan);
-		g.fillRect(20 + 100*selectedRow, 20, 80, 580);
+		g.fillRect(20 + 100*selectedColumn, 20, 80, 580);			//Målar ut den rektangeln som visar den aktuellt valda kolumnen
 		
 		for(int y = 0; y < 6; y++){								//Malar alla cirklar pa spelplanen (oavsett vilken farg de har)
 			for(int x = 0; x < 7; x++){
@@ -142,18 +142,18 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
 		if (keyCode == KeyEvent.VK_RIGHT) {
-			if (selectedRow == 6) {
-				selectedRow = 0;
+			if (selectedColumn == 6) {
+				selectedColumn = 0;
 			} else {
-				selectedRow += 1;
+				selectedColumn += 1;
 			}
 			System.out.println("Ett hopp at hoger!");
 		}
 		if (keyCode == KeyEvent.VK_LEFT) {
-			if (selectedRow == 0) {
-				selectedRow = 6;
+			if (selectedColumn == 0) {
+				selectedColumn = 6;
 			} else {
-				selectedRow -= 1;
+				selectedColumn -= 1;
 			}
 			System.out.println("Ett hopp at vanster!");
 		}
