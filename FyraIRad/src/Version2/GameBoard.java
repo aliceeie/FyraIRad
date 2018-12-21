@@ -77,10 +77,11 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 		arrayOfCircles[selectedColumn][y] = playersCircle;											//Platsen med selectedColumn som x-varde och y som y-varde ar den plats som spelarens cirkel sparas p�
 	}
 	
-	/**
-	 * Denna klass ansvarar for spellogiken och kollar om det finns en vinnare
-	 */
-	private void logic(){
+	public boolean checkForWinner() {
+		return (checkHorizontal() || checkVertically() || checkDiagonals());
+	}
+	
+	private boolean checkHorizontal() {
 		for(int y=0; y<6 ; y++) {
 			for(int x=0; x<4; x++) {														//Letar efter en vinnare i x-led
 				if (arrayOfCircles[x][y].getColor() == playersCircle.getColor() && 
@@ -88,9 +89,14 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 						arrayOfCircles[x+2][y].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x+3][y].getColor() == playersCircle.getColor()) {
 					System.out.println("VINNARE !!");										//och spelet ska avslutas
+					return true;
 				}
 			}
 		}
+		return false;
+	}
+	
+	private boolean checkVertically() {
 		for(int y=0; y<3 ; y++) {
 			for(int x=0; x<7; x++) {														//Letar efter vinnare i y-led
 				if (arrayOfCircles[x][y].getColor() == playersCircle.getColor() && 
@@ -98,9 +104,14 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 						arrayOfCircles[x][y+2].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x][y+3].getColor() == playersCircle.getColor()) {
 					System.out.println("VINNARE !!");										//och spelet ska avslutas
+					return true;
 				}
 			}
 		}
+		return false;
+	}
+	
+	private boolean checkDiagonals() {
 		for(int y=3; y<6 ; y++) {
 			for(int x=0; x<4; x++) {														//Letar efter vinnare diagonalt upp�t
 				if (arrayOfCircles[x][y].getColor() == playersCircle.getColor() && 
@@ -108,6 +119,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 						arrayOfCircles[x+2][y-2].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x+3][y-3].getColor() == playersCircle.getColor()) {
 					System.out.println("VINNARE !!");										//och spelet ska avslutas
+					return true;
 				}
 			}
 		}
@@ -118,9 +130,11 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 						arrayOfCircles[x+2][y+2].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x+3][y+3].getColor() == playersCircle.getColor()) {
 					System.out.println("VINNARE !!");										//och spelet ska avslutas
+					return true;
 				}
 			}
 		}
+		return false;
 	}
 
 	@Override
@@ -173,7 +187,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 		if (keyCode == KeyEvent.VK_DOWN) {					
 			System.out.println("Slappte nerknappen!");
 			playersTile();									//Har l�ggs spelpjasen ut
-			logic();
+			checkForWinner();
 			turn(player);									//Har gar turen over till andra spelaren
 		}
 	}
