@@ -35,4 +35,12 @@ public class Circle implements Drawable {
 		return false;
 	}
 
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
 }

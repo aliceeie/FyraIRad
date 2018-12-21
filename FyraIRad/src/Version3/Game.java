@@ -1,10 +1,7 @@
 package Version3;
 
-import java.awt.Graphics;
-
 public class Game {
 	
-	private Graphics g;
 	private DisplayWindow window;
 	private GameBoard gameBoard;
 	private boolean noWinner;

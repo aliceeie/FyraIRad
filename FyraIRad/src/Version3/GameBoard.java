@@ -1,11 +1,15 @@
 package Version3;
 
+import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.Line2D;
+
 import javax.swing.JComponent;
 import javax.swing.Timer;
 /**
@@ -15,10 +19,12 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	
 	private Circle playersCircle;
 	private Circle[][] arrayOfCircles;
+	private Graphics g;
 	private Timer timer = new Timer (4,this);
 	private Players turn;
 	private int selectedRow;
-	private boolean makeNewMove;
+	private boolean winnerDetected;
+	private int[] infoWinnerLocation;
 
 	public GameBoard() {
 		arrayOfCircles = new Circle[7][6];	//Sparar alla cirklar
@@ -26,7 +32,8 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 		selectedRow = 0;
 		turn = Players.player1;
 		initializeKeyListener();
-		makeNewMove = true;
+		winnerDetected = false;
+		infoWinnerLocation = new int[4];
 	}
 	
 	private void changeTurn() {
@@ -73,63 +80,44 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	}
 	
 	public boolean checkForWinner() {
-		makeNewMove = true;
-		return (checkHorizontal() || checkVertically() || checkDiagonals());		//Returnerar true om det finns en vinnare någonstans
+		return (checkHorizontal() || checkVertically() || 
+				checkRightDiagonal() || checkLeftDiagonal());	//Returnerar true om det finns en vinnare någonstans
 	}
 	
 	private boolean checkHorizontal() {
-		for(int y=0; y<6 ; y++) {
-			for(int x=0; x<4; x++) {														//Letar efter en vinnare i x-led
-				Color thisColor = arrayOfCircles[x][y].getColor();
-				if (!thisColor.equals(Color.white) &&
-						arrayOfCircles[x+1][y].getColor().equals(thisColor) &&
-						arrayOfCircles[x+2][y].getColor().equals(thisColor) &&
-						arrayOfCircles[x+3][y].getColor().equals(thisColor)) {
-					System.out.println("VINNARE !!");										//och spelet ska avslutas
-					return true;
-				}
-			}
-		}
-		return false;
+		return checkGeneral(0, 6, 0, 4, 0, 1);
 	}
 	
 	private boolean checkVertically() {
-		for(int y=0; y<3 ; y++) {
-			for(int x=0; x<7; x++) {														//Letar efter vinnare i y-led
-				Color thisColor = arrayOfCircles[x][y].getColor();
-				if (!thisColor.equals(Color.white) && 
-						arrayOfCircles[x][y+1].getColor().equals(thisColor) &&
-						arrayOfCircles[x][y+2].getColor().equals(thisColor) &&
-						arrayOfCircles[x][y+3].getColor().equals(thisColor)) {
-					System.out.println("VINNARE !!");										//och spelet ska avslutas
-					return true;
-				}
-			}
-		}
-		return false;
+		return checkGeneral(0, 3, 0, 7, 1, 0);
 	}
 	
-	private boolean checkDiagonals() {
-		for(int y=3; y<6 ; y++) {
-			for(int x=0; x<4; x++) {														//Letar efter vinnare diagonalt upp�t
-				Color thisColor = arrayOfCircles[x][y].getColor();
-				if (!thisColor.equals(Color.white) && 
-						arrayOfCircles[x+1][y-1].getColor().equals(thisColor) &&
-						arrayOfCircles[x+2][y-2].getColor().equals(thisColor) &&
-						arrayOfCircles[x+3][y-3].getColor().equals(thisColor)) {
-					System.out.println("VINNARE !!");										//och spelet ska avslutas
-					return true;
-				}
-			}
-		}
-		for(int y=0; y<3 ; y++) {
-			for(int x=0; x<4; x++) {														//Letar efter vinnare diagonalt ner�t
+	private boolean checkRightDiagonal() {
+		return checkGeneral(3, 6, 0, 4, -1, 1);
+	}
+	
+	private boolean checkLeftDiagonal() {
+		return checkGeneral(0, 3, 0, 4, 1, 1);
+	}
+	
+	private boolean checkGeneral(int yStart, int yStop, int xStart, int xStop,
+								int yAlter, int xAlter) {
+		for(int y = yStart; y < yStop; y++) {
+			for(int x = xStart; x < xStop; x++) {
 				Color thisColor = arrayOfCircles[x][y].getColor();
 				if (!thisColor.equals(Color.white) &&
-						arrayOfCircles[x+1][y+1].getColor().equals(thisColor) &&
-						arrayOfCircles[x+2][y+2].getColor().equals(thisColor) &&
-						arrayOfCircles[x+3][y+3].getColor().equals(thisColor)) {
-					System.out.println("VINNARE !!");										//och spelet ska avslutas
+						arrayOfCircles[x+xAlter][y+yAlter].getColor().equals(thisColor) &&
+						arrayOfCircles[x+2*xAlter][y+2*yAlter].getColor().equals(thisColor) &&
+						arrayOfCircles[x+3*xAlter][y+3*yAlter].getColor().equals(thisColor)) {
+					System.out.println("VINNARE !!");
+					
+					winnerDetected = true;
+					
+					infoWinnerLocation[0] = arrayOfCircles[x][y].getX();
+					infoWinnerLocation[1] = arrayOfCircles[x][y].getY();
+					infoWinnerLocation[2] = arrayOfCircles[x+3*xAlter][y+3*yAlter].getX();
+					infoWinnerLocation[3] = arrayOfCircles[x+3*xAlter][y+3*yAlter].getY();
+					
 					return true;
 				}
 			}
@@ -139,18 +127,32 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 
 	@Override
 	public void paint(Graphics g) {
+		
 		g.setColor(Color.blue);
-		g.fillRect(10, 10, 700, 600);							//Malar rektangeln som är spelplanen
+		g.fillRect(10, 10, 700, 600);						//Malar rektangeln som är spelplanen
 		
-		g.setColor(Color.cyan);
-		g.fillRect(20 + 100*selectedRow, 20, 80, 580);			//Målar ut den rektangeln som visar den aktuellt valda kolumnen
+		if(winnerDetected) {
+			paintHighlightWinner(g, infoWinnerLocation[0]+40, infoWinnerLocation[1]+40,
+					infoWinnerLocation[2]+40, infoWinnerLocation[3]+40);
+		} else {
+			g.setColor(Color.cyan);
+			g.fillRect(20 + 100*selectedRow, 20, 80, 580);	//Målar ut den rektangeln som visar den aktuellt valda kolumnen
+		}
 		
-		for(int y = 0; y < 6; y++){								//Malar alla cirklar pa spelplanen (oavsett vilken farg de har)
+		for(int y = 0; y < 6; y++){							//Malar alla cirklar pa spelplanen (oavsett vilken farg de har)
 			for(int x = 0; x < 7; x++){
 				arrayOfCircles[x][y].paint(g);
 			}
 		}
-	}	
+	}
+	
+	private void paintHighlightWinner(Graphics g, int x1, int y1, int x2, int y2) {
+		Graphics2D g2 = (Graphics2D) g;
+
+		g2.setColor(Color.cyan);
+		g2.setStroke(new BasicStroke(80));
+		g2.draw(new Line2D.Float(x1, y1, x2, y2));		//Målar rektangel där vinsten är
+	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -184,14 +186,12 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int keyCode = e.getKeyCode();
-		//if(makeNewMove) {
 			if (keyCode == KeyEvent.VK_DOWN) {				
 				System.out.println("Slappte nerknappen!");
+				
 				markCircle(selectedRow);
 				changeTurn();
-				makeNewMove = false;
 			}
-		//}
 	}
 
 	@Override
