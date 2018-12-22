@@ -29,7 +29,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 		initializeKeyListener();
 	}
 
-	private Player turn (Player player) {					//Turen gar over till den andra spelaren
+	private Player turn(Player player) {					//Turen gar over till den andra spelaren
 		System.out.println("FARG: " + player.getColor());
 		if(player.getColor().equals(Color.red)) {			//Fran rod till gul
 			this.player = new Player(Color.yellow);
@@ -53,11 +53,11 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 		timer = new Timer (10,this);
 		timer.start();
 		addKeyListener(this);
-        setFocusable (true);
+        setFocusable(true);
         setFocusTraversalKeysEnabled(false);
 	}
 	
-	public int isPlaceOccupied (int y) {
+	public int getNextEmptyPlace (int y) {
 		while(y > 0 && !(arrayOfCircles[selectedRow][y].getColor().equals(Color.white))){		//Om platsen dar vi ska satta brickan inte ar vit maste vi satta den pa en plats ovanfor (lagre y-varde)
 			y--;
 		}
@@ -68,71 +68,93 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	 * Skapar en ny cirkel med spelarens farg och sparar den pa ratt plats i arrayOfCircles	
 	 */
 	public void playersTile(){
-		int yStart = 5;																			//Borjar pa 5:e platsen i arrayen (längst ner)
-		int y = isPlaceOccupied(yStart);														//Platsen i y-led dar spelpjasen laggs
+		int yStart = 5;																			//Borjar pa 5:e platsen i arrayen (lï¿½ngst ner)
+		int y = getNextEmptyPlace(yStart);														//Platsen i y-led dar spelpjasen laggs
 	
 		playersCircle = new Circle(player.getColor(), 20 + 100*selectedRow, 20 + 100*y, 80);	//Skapar en ny cirkel som har spelarens farg pa den plats spelaren har valt
 		
 		System.out.println("X: " + selectedRow);
 		System.out.println("Y: " + y);
 
-		arrayOfCircles[selectedRow][y] = playersCircle;											//Platsen med selectedRow som x-varde och y som y-varde ar den plats som spelarens cirkel sparas på
+		arrayOfCircles[selectedRow][y] = playersCircle;											//Platsen med selectedRow som x-varde och y som y-varde ar den plats som spelarens cirkel sparas pï¿½
 	}
 	
-	/**
-	 * Denna klass ansvarar for spellogiken och kollar om det finns en vinnare
-	 */
-	private void logic(){
+	public boolean checkForWinner() {
+		return (checkHorizontal() || checkVertically() || checkDiagonals());
+	}
+	
+	private boolean checkHorizontal() {
 		for(int y=0; y<6 ; y++) {
 			for(int x=0; x<4; x++) {														//Letar efter en vinnare i x-led
 				if (arrayOfCircles[x][y].getColor() == playersCircle.getColor() && 
 						arrayOfCircles[x+1][y].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x+2][y].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x+3][y].getColor() == playersCircle.getColor()) {
+
 					gameOver = true;
+					System.out.println("VINNARE !!");										//och spelet ska avslutas
+					return true;
 				}
 			}
 		}
+		return false;
+	}
+	
+	private boolean checkVertically() {
 		for(int y=0; y<3 ; y++) {
 			for(int x=0; x<7; x++) {														//Letar efter vinnare i y-led
 				if (arrayOfCircles[x][y].getColor() == playersCircle.getColor() && 
 						arrayOfCircles[x][y+1].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x][y+2].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x][y+3].getColor() == playersCircle.getColor()) {
+
 					gameOver = true;
+					System.out.println("VINNARE !!");										//och spelet ska avslutas
+					return true;
 				}
 			}
 		}
+		return false;
+	}
+	
+	private boolean checkDiagonals() {
 		for(int y=3; y<6 ; y++) {
-			for(int x=0; x<4; x++) {														//Letar efter vinnare diagonalt uppåt
+			for(int x=0; x<4; x++) {														//Letar efter vinnare diagonalt uppï¿½t
 				if (arrayOfCircles[x][y].getColor() == playersCircle.getColor() && 
 						arrayOfCircles[x+1][y-1].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x+2][y-2].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x+3][y-3].getColor() == playersCircle.getColor()) {
+
 					gameOver = true;
+					System.out.println("VINNARE !!");										//och spelet ska avslutas
+					return true;
 				}
 			}
 		}
 		for(int y=0; y<3 ; y++) {
-			for(int x=0; x<4; x++) {														//Letar efter vinnare diagonalt neråt
+			for(int x=0; x<4; x++) {														//Letar efter vinnare diagonalt nerï¿½t
 				if (arrayOfCircles[x][y].getColor() == playersCircle.getColor() && 
 						arrayOfCircles[x+1][y+1].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x+2][y+2].getColor() == playersCircle.getColor() &&
 						arrayOfCircles[x+3][y+3].getColor() == playersCircle.getColor()) {
+
 					gameOver = true;
+					System.out.println("VINNARE !!");										//och spelet ska avslutas
+					return true;
 				}
 			}
 		}
+		return false;
 	}
 	
 
 	@Override
 	public void paint(Graphics g) {
 		g.setColor(Color.blue);
-		g.fillRect(10, 10, 700, 600);
+		g.fillRect(10, 10, 700, 600);							//Malar rektangeln som Ã¤r spelplanen
 		
 		g.setColor(Color.cyan);
-		g.fillRect(20 + 100*selectedRow, 20, 80, 580);
+		g.fillRect(20 + 100*selectedRow, 20, 80, 580);			//MÃ¥lar ut den rektangeln som visar den aktuellt valda kolumnen
 		
 		for(int y = 0; y < 6; y++){								//Malar alla cirklar pa spelplanen (oavsett vilken farg de har)
 			for(int x = 0; x < 7; x++){
@@ -183,8 +205,8 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 		int keyCode = e.getKeyCode();
 		if (keyCode == KeyEvent.VK_DOWN) {					
 			System.out.println("Slappte nerknappen!");
-			playersTile();									//Har läggs spelpjasen ut
-			logic();
+			playersTile();									//Har lï¿½ggs spelpjasen ut
+			checkForWinner();
 			turn(player);									//Har gar turen over till andra spelaren
 		}
 	}

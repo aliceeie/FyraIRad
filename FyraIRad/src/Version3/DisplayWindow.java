@@ -1,4 +1,4 @@
-package Version2;
+package Version3;
 
 import javax.swing.JFrame;
 
