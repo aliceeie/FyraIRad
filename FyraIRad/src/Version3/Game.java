@@ -6,7 +6,7 @@ public class Game {
 	private Menu menu;
 	private GameBoard gameBoard;
 	private boolean noWinner;
-	private STATE State;
+	public static STATE State;
 	
 	public void start() {
 		State = STATE.MENU;	
@@ -15,7 +15,6 @@ public class Game {
 		if (State == STATE.MENU) {
 			menu = new Menu();
 			window.showMenu(menu);
-			
 		}else if (State == STATE.GAME) {
 			initializeGame();
 			while(noWinner) {
@@ -30,6 +29,14 @@ public class Game {
 		gameBoard = new GameBoard();
 		window.showGame(gameBoard);
 		noWinner = true;
+	}
+	
+	public static void changeState() {
+		if (State == STATE.MENU) {
+			State = STATE.GAME;
+		}else {
+			State = STATE.MENU;
+		}
 	}
 	
 	private enum STATE{
