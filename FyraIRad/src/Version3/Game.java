@@ -3,25 +3,38 @@ package Version3;
 public class Game {
 	
 	private DisplayWindow window;
+	private Menu menu;
 	private GameBoard gameBoard;
 	private boolean noWinner;
+	private STATE State;
 	
 	public void start() {
-		initialize();
+		State = STATE.MENU;	
+		window = new DisplayWindow();
 		
-		while(noWinner) {
-			//System.out.println("Checking for winner...");
-			checkForWinner();
+		if (State == STATE.MENU) {
+			menu = new Menu();
+			window.showMenu(menu);
+			
+		}else if (State == STATE.GAME) {
+			initializeGame();
+			while(noWinner) {
+				//System.out.println("Checking for winner...");
+				checkForWinner();
+			}
+			System.out.println("Nagon har vunnit, spelet ar slut!");
 		}
-		System.out.println("Någon har vunnit, spelet är slut!");
 	}
 	
-	private void initialize() {
+	private void initializeGame() {
 		gameBoard = new GameBoard();
-		window = new DisplayWindow(gameBoard);		
-		window.show();
+		window.showGame(gameBoard);
 		noWinner = true;
 	}
+	
+	private enum STATE{
+		MENU, GAME
+	};
 	
 	private void checkForWinner() {
 		noWinner = !gameBoard.checkForWinner();

@@ -18,21 +18,19 @@ import javax.swing.Timer;
  */
 class GameBoard extends JComponent implements Drawable, ActionListener, KeyListener {
 	
-	private Circle playersCircle;
 	private Circle[][] arrayOfCircles;
-	private Graphics g;
-	private Timer timer = new Timer (4,this);
+	private Timer timer; // = new Timer (4,this);
 	private Players currentPlayer;					//Bytte namn pa turn till currentPlayer
 	private int selectedRow;
 	private boolean winnerDetected;
 	private int[] infoWinnerLocation;
 
 	public GameBoard() {
+		initializeKeyListener();		
 		arrayOfCircles = new Circle[7][6];	//Sparar alla cirklar
 		createWhiteCircles();
 		selectedRow = 0;
 		currentPlayer = Players.player1;
-		initializeKeyListener();
 		winnerDetected = false;
 		infoWinnerLocation = new int[4];
 	}
@@ -128,7 +126,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 
 	@Override
 	public void paint(Graphics g) {
-		
+
 		g.setColor(Color.blue);
 		g.fillRect(10, 10, 700, 600);						//Malar rektangeln som är spelplanen
 		
@@ -195,7 +193,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	}
 	
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void actionPerformed(ActionEvent arg0) {				//Vad som hander da klockan slar
 		repaint();
 	}
 
