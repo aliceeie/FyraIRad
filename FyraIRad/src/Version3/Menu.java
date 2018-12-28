@@ -14,7 +14,7 @@ import javax.swing.JComponent;
 import javax.swing.Timer;
 
 public class Menu {
-	private static int boardWitdh = 700;					//Skapar variabler for att gora klassen mer generell
+	private static int boardWitdh = 700;		//Skapar variabler for att gora klassen mer generell
 	private static int boardHeight = 600;
 	public static int selectedItem = 0; 
 	
@@ -41,7 +41,6 @@ public class Menu {
 		
 		//Vem motstandaren ar
 		g.setFont(font2);
-		
 		g.drawString("Select with enter-key", (boardWitdh-(textWidth("Select with enter-key", font2)))/2, 160);
 		
 		//Rutor med text
@@ -51,7 +50,7 @@ public class Menu {
 
 	}
 	/**
-	 * Malar ut rektanglar med text inuti centrerade på spelplanen
+	 * Malar ut rektanglar med text inuti centrerade pï¿½ spelplanen
 	 * 
 	 */
 	private static void paintRectangle(Graphics g, String text, Font font, int y, int item) {

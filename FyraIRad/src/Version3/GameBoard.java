@@ -20,7 +20,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	
 	private Circle[][] arrayOfCircles;
 	private Timer timer;
-	private Players currentPlayer;					//Bytte namn pa turn till currentPlayer
+	private Players currentPlayer;
 	private int selectedRow;
 	private boolean winnerDetected;
 	private int[] infoWinnerLocation;
@@ -35,13 +35,13 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 		arrayOfCircles = new Circle[7][6];	//Sparar alla cirklar
 		createWhiteCircles();
 		selectedRow = 0;
-		currentPlayer = Players.player1;	//Just nu börjar alltid player1 (röd)
+		currentPlayer = Players.player1;	//Just nu bï¿½rjar alltid player1 (rï¿½d)
 		winnerDetected = false;
 		infoWinnerLocation = new int[4];
 	}
 	
 	private enum STATE {
-		MENU, GAME, COMPGAME, HIGHSCORE					//Meny-, tvåspelare-, enspelare- eller highscoreläge
+		MENU, GAME, COMPGAME, HIGHSCORE					//Meny-, tvï¿½spelare-, enspelare- eller highscorelï¿½ge
 	};
 	
 	private void changeTurn() {
@@ -167,11 +167,11 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 		}
 		else if (State == STATE.HIGHSCORE) {
 			
-			//Här ska highscoren ritas ut på ett bra sätt 
+			//Hï¿½r ska highscoren ritas ut pï¿½ ett bra sï¿½tt 
 			g.setColor(Color.white);
 			Font font2 = new Font("arial", Font.PLAIN, 40);
 			g.setFont(font2);
-			g.drawString("Här ska highscoren skrivas ut", 100, 200);
+			g.drawString("Hï¿½r ska highscoren skrivas ut", 100, 200);
 			
 		}
 	}
@@ -209,7 +209,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 
 	}
 		/**
-		 * Tar hand om alla inmatningar då vi är i meny-läget
+		 * Tar hand om alla inmatningar dï¿½ vi ï¿½r i meny-lï¿½get
 		 * 
 		 */
 		private void menuKeyPressed(int keyCode) {
@@ -242,7 +242,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 			}
 		}
 		/**
-		 * Tar hand om alla inmatningar då vi är i tvåspelarläget
+		 * Tar hand om alla inmatningar dï¿½ vi ï¿½r i tvï¿½spelarlï¿½get
 		 * 
 		 */
 		private void gameKeyPressed(int keyCode) {
@@ -293,7 +293,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 			}
 		}
 		/**
-		 * Tar hand om alla inmatningar då vi är i en-spelare-mot-datorn-spelläget
+		 * Tar hand om alla inmatningar dï¿½ vi ï¿½r i en-spelare-mot-datorn-spellï¿½get
 		 * 
 		 */
 		private void compGameKeyPressed(int keyCode) {
@@ -366,7 +366,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 			}
 			else if (currentPlayer == Players.player2) {
 	
-				//Här ska datorn göra sitt drag
+				//Hï¿½r ska datorn gï¿½ra sitt drag
 				
 			}
 		}
