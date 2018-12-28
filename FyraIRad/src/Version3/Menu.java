@@ -41,12 +41,13 @@ public class Menu {
 		
 		//Vem motstandaren ar
 		g.setFont(font2);
-		g.drawString("You're playing against " + "...", (boardWitdh-(textWidth("You're playing against " + "...", font2)))/2, 160);
+		
+		g.drawString("Select with enter-key", (boardWitdh-(textWidth("Select with enter-key", font2)))/2, 160);
 		
 		//Rutor med text
-		paintRectangle(g, "Play", font1, 220, 0);
-		paintRectangle(g, "Choose opponent", font1, 320, 1);
-		paintRectangle(g, "Rules", font1, 420, 2);
+		paintRectangle(g, "Play against friend", font1, 220, 0);
+		paintRectangle(g, "Play against computer", font1, 320, 1);
+		paintRectangle(g, "Highscore", font1, 420, 2);
 
 	}
 	/**

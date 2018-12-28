@@ -35,26 +35,14 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 		arrayOfCircles = new Circle[7][6];	//Sparar alla cirklar
 		createWhiteCircles();
 		selectedRow = 0;
-		currentPlayer = Players.player1;
+		currentPlayer = Players.player1;	//Just nu börjar alltid player1 (röd)
 		winnerDetected = false;
 		infoWinnerLocation = new int[4];
-
 	}
 	
 	private enum STATE {
-		MENU, GAME
+		MENU, GAME, COMPGAME, HIGHSCORE					//Meny-, tvåspelare-, enspelare- eller highscoreläge
 	};
-	
-	private void changeState() {
-		System.out.print("State changed");
-		if (State == STATE.MENU) {
-			State = STATE.GAME;
-			System.out.println(" to game");
-		} else {
-			State = STATE.MENU;
-			System.out.println(" to menu");
-		}
-	}
 	
 	private void changeTurn() {
 		if (currentPlayer == Players.player1) {
@@ -155,12 +143,16 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 		if (State == STATE.MENU) {					 //Om vi ar i menylaget
 			Menu.setSelectedItem(selectedItem);
 			Menu.render(g);
-		} else {
+		} 
+		else if (State == STATE.GAME || State == STATE.COMPGAME){
 			if(winnerDetected) {
 				paintHighlightWinner(g, infoWinnerLocation[0]+40, infoWinnerLocation[1]+40,
 						infoWinnerLocation[2]+40, infoWinnerLocation[3]+40);
 			} else {
-				g.setColor(Color.cyan);
+				if (currentPlayer.getCurrentColor() == Color.red)
+					g.setColor(Color.cyan);
+				else 
+					g.setColor(Color.lightGray);
 				g.fillRect(20 + 100*selectedRow, 20, 80, 580);	//MÃ¥lar ut den rektangeln som visar den aktuellt valda kolumnen
 			}
 			
@@ -172,6 +164,15 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 			if(winnerDetected) {
 				paintWinnerMenu(g);
 			}
+		}
+		else if (State == STATE.HIGHSCORE) {
+			
+			//Här ska highscoren ritas ut på ett bra sätt 
+			g.setColor(Color.white);
+			Font font2 = new Font("arial", Font.PLAIN, 40);
+			g.setFont(font2);
+			g.drawString("Här ska highscoren skrivas ut", 100, 200);
+			
 		}
 	}
 	
@@ -199,55 +200,128 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
 		
-		if (State == STATE.GAME)			//Om vi ar i spellaget
-			gameKeyPressed(keyCode);
-		else								//Om vi ar i menylaget
+		if (State == STATE.MENU)		//Om vi ar i menylaget
 			menuKeyPressed(keyCode);
+		else if (State == STATE.GAME)		//Om vi ar i spellaget
+			gameKeyPressed(keyCode);
+		else if (State == STATE.COMPGAME)
+			compGameKeyPressed(keyCode);
+
 	}
-	/**
-	 * Tar hand om allt som hander da vi ar i meny-laget
-	 * 
-	 */
-	private void menuKeyPressed(int keyCode) {
-		if (keyCode == KeyEvent.VK_DOWN) {
-			if (selectedItem == 2) {
-				selectedItem = 0;
-			} else {
-				selectedItem += 1;
+		/**
+		 * Tar hand om alla inmatningar då vi är i meny-läget
+		 * 
+		 */
+		private void menuKeyPressed(int keyCode) {
+			if (keyCode == KeyEvent.VK_DOWN) {
+				if (selectedItem == 2) {
+					selectedItem = 0;
+				} else {
+					selectedItem += 1;
+				}
+				System.out.println("NER" + selectedItem);
 			}
-			System.out.println("NER" + selectedItem);
-		}
-		if (keyCode == KeyEvent.VK_ENTER) {
-			if (selectedItem == 0) {
-				changeState();
+			if (keyCode == KeyEvent.VK_UP) {
+				if (selectedItem == 0) {
+					selectedItem = 2;
+				} else {
+					selectedItem -= 1;
+				}
+				System.out.println("NER" + selectedItem);
+			}
+			if (keyCode == KeyEvent.VK_ENTER) {
+				if (selectedItem == 0) {
+					State = STATE.GAME;
+				}
+				else if (selectedItem == 1) {
+					State = STATE.COMPGAME;
+				}
+				else if (selectedItem == 2) {
+					State = STATE.HIGHSCORE;
+				}
 			}
 		}
-	}
-	
-	private void gameKeyPressed(int keyCode) {
-		if (keyCode == KeyEvent.VK_RIGHT) {
-			if (selectedRow == 6) {
-				selectedRow = 0;
-			} else {
-				selectedRow += 1;
+		/**
+		 * Tar hand om alla inmatningar då vi är i tvåspelarläget
+		 * 
+		 */
+		private void gameKeyPressed(int keyCode) {
+			if (currentPlayer == Players.player1) {				//Player1 spelar med piltangenterna
+				if (keyCode == KeyEvent.VK_RIGHT) {
+					if (selectedRow == 6) {
+						selectedRow = 0;
+					} else {
+						selectedRow += 1;
+					}
+					System.out.println("Ett hopp at hoger!");
+				}
+				if (keyCode == KeyEvent.VK_LEFT) {
+					if (selectedRow == 0) {
+						selectedRow = 6;
+					} else {
+						selectedRow -= 1;
+					}
+					System.out.println("Ett hopp at vanster!");
+				}
+				if (keyCode == KeyEvent.VK_DOWN) {
+					System.out.println("=====================================\nEtt drag registrerat!");
+				}
 			}
-			System.out.println("Ett hopp at hoger!");
-		}
-		if (keyCode == KeyEvent.VK_LEFT) {
-			if (selectedRow == 0) {
-				selectedRow = 6;
-			} else {
-				selectedRow -= 1;
+			if (currentPlayer == Players.player2) {				//Player1 spelar med asd-tangenterna
+				if (keyCode == KeyEvent.VK_D) {
+					if (selectedRow == 6) {
+						selectedRow = 0;
+					} else {
+						selectedRow += 1;
+					}
+					System.out.println("Ett hopp at hoger!");
+				}
+				if (keyCode == KeyEvent.VK_A) {
+					if (selectedRow == 0) {
+						selectedRow = 6;
+					} else {
+						selectedRow -= 1;
+					}
+					System.out.println("Ett hopp at vanster!");
+				}
+				if (keyCode == KeyEvent.VK_S) {
+					System.out.println("=====================================\nEtt drag registrerat!");
+				}
 			}
-			System.out.println("Ett hopp at vanster!");
+			if (keyCode == KeyEvent.VK_ESCAPE) {
+				State = STATE.MENU;
+			}
 		}
-		if (keyCode == KeyEvent.VK_DOWN) {
-			System.out.println("=====================================\nEtt drag registrerat!");
+		/**
+		 * Tar hand om alla inmatningar då vi är i en-spelare-mot-datorn-spelläget
+		 * 
+		 */
+		private void compGameKeyPressed(int keyCode) {
+			if (currentPlayer == Players.player1) {
+				if (keyCode == KeyEvent.VK_RIGHT) {
+					if (selectedRow == 6) {
+						selectedRow = 0;
+					} else {
+						selectedRow += 1;
+					}
+					System.out.println("Ett hopp at hoger!");
+				}
+				if (keyCode == KeyEvent.VK_LEFT) {
+					if (selectedRow == 0) {
+						selectedRow = 6;
+					} else {
+						selectedRow -= 1;
+					}
+					System.out.println("Ett hopp at vanster!");
+				}
+				if (keyCode == KeyEvent.VK_DOWN) {
+					System.out.println("=====================================\nEtt drag registrerat!");
+				}
+				if (keyCode == KeyEvent.VK_ESCAPE) {
+					State = STATE.MENU;
+				}
+			}
 		}
-		if (keyCode == KeyEvent.VK_ESCAPE) {
-			changeState();
-		}
-	}
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {				//Vad som hander da klockan slar
@@ -257,16 +331,45 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int keyCode = e.getKeyCode();
-		if (State == STATE.GAME) {								//Om vi ar i spellage
-			if (keyCode == KeyEvent.VK_DOWN) {				
-				System.out.println("Slappte nerknappen!");
-				
-				markCircle(selectedRow);
-				if(!winnerDetected)
-					changeTurn();
+		if (State == STATE.GAME)
+			gameKeyReleased(keyCode);
+		if (State == STATE.COMPGAME)
+			compGameKeyReleased(keyCode);
+	}
+	
+		private void gameKeyReleased(int keyCode) {
+			if (currentPlayer == Players.player1) {	
+				if (keyCode == KeyEvent.VK_DOWN) {				
+					System.out.println("Slappte nerknappen!");
+					markCircle(selectedRow);
+					if(!winnerDetected)
+						changeTurn();
+				}
+			}
+			else if (currentPlayer == Players.player2) {
+				if (keyCode == KeyEvent.VK_S) {				
+					System.out.println("Slappte nerknappen!");
+					markCircle(selectedRow);
+					if(!winnerDetected)
+						changeTurn();
+				}
 			}
 		}
-	}
+		private void compGameKeyReleased(int keyCode) {
+			if (currentPlayer == Players.player1) { 
+				if (keyCode == KeyEvent.VK_DOWN) {				
+					System.out.println("Slappte nerknappen!");
+					markCircle(selectedRow);
+					if(!winnerDetected)
+						changeTurn();
+				}
+			}
+			else if (currentPlayer == Players.player2) {
+	
+				//Här ska datorn göra sitt drag
+				
+			}
+		}
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {}
