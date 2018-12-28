@@ -13,44 +13,33 @@ import java.awt.geom.AffineTransform;
 import javax.swing.JComponent;
 import javax.swing.Timer;
 
-public class Menu extends JComponent implements Drawable, ActionListener, KeyListener{
-	private Timer timer;
-	private int boardWitdh = 700;
-	private int boardHeight = 600;
-	private String[] menuItems= new String[3];
-	private String opponent;
-	private int selectedItem = 0;
+public class Menu {
+	private static int boardWitdh = 700;					//Skapar variabler for att gora klassen mer generell
+	private static int boardHeight = 600;
+	public static int selectedItem = 0; 
 	
-	public Menu() {
-		initializeKeyListener();
-		
-	}
 	/**
 	 * selectedItem = 0 -> play
 	 * selectedItem = 1 -> choose opponent
 	 * selectedItem = 2 -> rules
 	 */
-	private void selectedButton() {
-		
+	public static void setSelectedItem(int selectedItem) {
+		Menu.selectedItem = selectedItem;
 	}
 	
-	@Override
-	public void paint(Graphics g) {
-		int x;
-		
-		//Bakgrundsrektangeln
-		g.setColor(Color.blue);
-		g.fillRect(10, 10, boardWitdh, boardHeight);
-		
+	public static void render(Graphics g) {
+		//Skapar ett antal typsnitt som senare anvands
 		Font font0 = new Font("arial", Font.BOLD, 70);
 		Font font1 = new Font("arial", Font.PLAIN, 50);
 		Font font2 = new Font("arial", Font.PLAIN, 40);
 		
 		g.setColor(Color.white);
+		
 		//Rubriken
 		g.setFont(font0);
 		g.drawString("FOUR IN A ROW", (boardWitdh-(textWidth("FOUR IN A ROW", font0)))/2, 100);
 		
+		//Vem motstandaren ar
 		g.setFont(font2);
 		g.drawString("You're playing against " + "...", (boardWitdh-(textWidth("You're playing against " + "...", font2)))/2, 160);
 		
@@ -64,7 +53,7 @@ public class Menu extends JComponent implements Drawable, ActionListener, KeyLis
 	 * Malar ut rektanglar med text inuti centrerade på spelplanen
 	 * 
 	 */
-	private void paintRectangle(Graphics g, String text, Font font, int y, int item) {
+	private static void paintRectangle(Graphics g, String text, Font font, int y, int item) {
 		if(item == selectedItem) {
 			g.setColor(Color.darkGray);
 			g.fillRect(((boardWitdh-textWidth(text, font))/2)-10, y-10, textWidth(text, font)+20, textHeight(text, font)+20);			
@@ -79,55 +68,20 @@ public class Menu extends JComponent implements Drawable, ActionListener, KeyLis
 	/**
 	 * returnerar hojden pa texten som skickas med den font som ocksa skickas med
 	 */
-	private int textHeight(String text, Font font) {
+	private static int textHeight(String text, Font font) {
 		AffineTransform affinetransform = new AffineTransform();     
 		FontRenderContext frc = new FontRenderContext(affinetransform,true,true);
 		int textheight = (int)(font.getStringBounds(text, frc).getHeight());
 		return textheight;
 	}
-	
-	private int textWidth(String text, Font font) {
+	/**
+	 * returnerar bredden pa texten som skickas med den font som ocksa skickas med
+	 */
+	private static int textWidth(String text, Font font) {
 		AffineTransform affinetransform = new AffineTransform();     
 		FontRenderContext frc = new FontRenderContext(affinetransform,true,true);
 		int textwidth = (int)(font.getStringBounds(text, frc).getWidth());
 		return textwidth;
-	}
-	
-	private void initializeKeyListener() {
-		timer = new Timer (10,this);
-		timer.start();
-		addKeyListener(this);
-        setFocusable(true);
-        setFocusTraversalKeysEnabled(false);
-	}
-	
-	
-	@Override
-	public void keyTyped(KeyEvent e) {}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		int keyCode = e.getKeyCode();
-		if (keyCode == KeyEvent.VK_DOWN) {
-			if (selectedItem == 2) {
-				selectedItem = 0;
-			} else {
-				selectedItem += 1;
-			}
-			System.out.println("NER" + selectedItem);
-		}
-		if (keyCode == KeyEvent.VK_ENTER) {
-			if (selectedItem == 0)
-				Game.changeState();
-		}
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		repaint();
 	}
 
 }

@@ -2,8 +2,6 @@ package Version3;
 
 import javax.swing.JFrame;
 
-import java.awt.Graphics;
-
 public class DisplayWindow {
 	
 	private JFrame window = new JFrame();
@@ -14,12 +12,9 @@ public class DisplayWindow {
 	}
 	
 	public void showGame(GameBoard gameBoard) {
-		window.getContentPane().add(gameBoard);						//Visar vart gameBoard
-	    window.setVisible(true);
-	}
-	
-	public void showMenu(Menu menu) {
-		window.getContentPane().add(menu);
-	    window.setVisible(true);
+		window.setContentPane(gameBoard);
+//		window.getContentPane().add(gameBoard);						//Visar vart gameBoard
+	    System.out.println("gameBoard");
+		window.setVisible(true);
 	}
 }

@@ -19,20 +19,41 @@ import javax.swing.Timer;
 class GameBoard extends JComponent implements Drawable, ActionListener, KeyListener {
 	
 	private Circle[][] arrayOfCircles;
-	private Timer timer; // = new Timer (4,this);
+	private Timer timer;
 	private Players currentPlayer;					//Bytte namn pa turn till currentPlayer
 	private int selectedRow;
 	private boolean winnerDetected;
 	private int[] infoWinnerLocation;
+	
+	private STATE State;
+	private int selectedItem = 0;
+	
 
 	public GameBoard() {
-		initializeKeyListener();		
+		State = STATE.MENU;					//Startar i menylage
+		initializeKeyListener();
 		arrayOfCircles = new Circle[7][6];	//Sparar alla cirklar
 		createWhiteCircles();
 		selectedRow = 0;
 		currentPlayer = Players.player1;
 		winnerDetected = false;
 		infoWinnerLocation = new int[4];
+
+	}
+	
+	private enum STATE {
+		MENU, GAME
+	};
+	
+	private void changeState() {
+		System.out.print("State changed");
+		if (State == STATE.MENU) {
+			State = STATE.GAME;
+			System.out.println(" to game");
+		} else {
+			State = STATE.MENU;
+			System.out.println(" to menu");
+		}
 	}
 	
 	private void changeTurn() {
@@ -130,21 +151,27 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 		g.setColor(Color.blue);
 		g.fillRect(10, 10, 700, 600);						//Malar rektangeln som är spelplanen
 		
-		if(winnerDetected) {
-			paintHighlightWinner(g, infoWinnerLocation[0]+40, infoWinnerLocation[1]+40,
-					infoWinnerLocation[2]+40, infoWinnerLocation[3]+40);
-		} else {
-			g.setColor(Color.cyan);
-			g.fillRect(20 + 100*selectedRow, 20, 80, 580);	//Målar ut den rektangeln som visar den aktuellt valda kolumnen
-		}
 		
-		for(int y = 0; y < 6; y++){							//Malar alla cirklar pa spelplanen (oavsett vilken farg de har)
-			for(int x = 0; x < 7; x++){
-				arrayOfCircles[x][y].paint(g);
+		if (State == STATE.MENU) {					 //Om vi ar i menylaget
+			Menu.setSelectedItem(selectedItem);
+			Menu.render(g);
+		} else {
+			if(winnerDetected) {
+				paintHighlightWinner(g, infoWinnerLocation[0]+40, infoWinnerLocation[1]+40,
+						infoWinnerLocation[2]+40, infoWinnerLocation[3]+40);
+			} else {
+				g.setColor(Color.cyan);
+				g.fillRect(20 + 100*selectedRow, 20, 80, 580);	//Målar ut den rektangeln som visar den aktuellt valda kolumnen
 			}
-		}
-		if(winnerDetected) {
-			paintWinnerMenu(g);
+			
+			for(int y = 0; y < 6; y++){							//Malar alla cirklar pa spelplanen (oavsett vilken farg de har)
+				for(int x = 0; x < 7; x++){
+					arrayOfCircles[x][y].paint(g);
+				}
+			}
+			if(winnerDetected) {
+				paintWinnerMenu(g);
+			}
 		}
 	}
 	
@@ -171,6 +198,33 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
+		
+		if (State == STATE.GAME)			//Om vi ar i spellaget
+			gameKeyPressed(keyCode);
+		else								//Om vi ar i menylaget
+			menuKeyPressed(keyCode);
+	}
+	/**
+	 * Tar hand om allt som hander da vi ar i meny-laget
+	 * 
+	 */
+	private void menuKeyPressed(int keyCode) {
+		if (keyCode == KeyEvent.VK_DOWN) {
+			if (selectedItem == 2) {
+				selectedItem = 0;
+			} else {
+				selectedItem += 1;
+			}
+			System.out.println("NER" + selectedItem);
+		}
+		if (keyCode == KeyEvent.VK_ENTER) {
+			if (selectedItem == 0) {
+				changeState();
+			}
+		}
+	}
+	
+	private void gameKeyPressed(int keyCode) {
 		if (keyCode == KeyEvent.VK_RIGHT) {
 			if (selectedRow == 6) {
 				selectedRow = 0;
@@ -190,6 +244,9 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 		if (keyCode == KeyEvent.VK_DOWN) {
 			System.out.println("=====================================\nEtt drag registrerat!");
 		}
+		if (keyCode == KeyEvent.VK_ESCAPE) {
+			changeState();
+		}
 	}
 	
 	@Override
@@ -200,6 +257,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int keyCode = e.getKeyCode();
+		if (State == STATE.GAME) {								//Om vi ar i spellage
 			if (keyCode == KeyEvent.VK_DOWN) {				
 				System.out.println("Slappte nerknappen!");
 				
@@ -207,6 +265,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 				if(!winnerDetected)
 					changeTurn();
 			}
+		}
 	}
 
 	@Override
