@@ -3,16 +3,22 @@ package Version4;
 import java.awt.Color;
 
 public enum Players {
-	player1(Color.red), player2(Color.yellow);
+	player1(Color.red, "Player1"), player2(Color.yellow, "Player2");
 	
-	private Color currentColor;
+	private Color color;
+	private String name;
 	
-	private Players(Color newCurrentColor) {
-		this.currentColor = newCurrentColor;
+	private Players(Color newColor, String newName) {
+		this.color = newColor;
+		this.name = newName;
 	}
 	
-	public Color getCurrentColor() {
-		return currentColor;
+	public Color getColor() {
+		return color;
+	}
+	
+	public String getName() {
+		return name;
 	}
 
 }

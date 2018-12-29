@@ -20,17 +20,23 @@ public class FyraIRad{
 		while(gameIsRunning) {
 			
 			if (State == STATE.MENU) {
-				window.showMenu(menu);									//Visar menu
+				window.showNewComponent(menu, "Menu");				//Visar menu
 				waitForNewState(menu);									//Ligger kvar här tills användaren valt i menu
 			} 
-			else if (State == STATE.GAME || State == STATE.COMPGAME){
-				gameBoard = new GameBoard(randomizeStartPlayer());		//Skapar ett nytt gameBoard till ett nytt game
-				window.showGame(gameBoard);								//Visar gameBoard
+			else if (State == STATE.GAME){
+				//Skapar ett nytt gameBoard till ett nytt game
+				gameBoard = new GameBoard(1, randomizeStartPlayer(), boardWidth, boardHeight);
+				window.showNewComponent(gameBoard, "Two player game");				//Visar gameBoard
 				waitForNewState(gameBoard);								//Ligger kvar i detta läge tills användaren exits med ESC
-				System.out.println("Nagon har vunnit!");
-			}
+			} 
+			else if(State == STATE.COMPGAME) {
+				//Skapar ett nytt gameBoard till ett nytt game
+				gameBoard = new GameBoard(2, randomizeStartPlayer(), boardWidth, boardHeight);
+				window.showNewComponent(gameBoard, "Single player game");				//Visar gameBoard
+				waitForNewState(gameBoard);								//Ligger kvar i detta läge tills användaren exits med ESC
+			} 
 			else if (State == STATE.HIGHSCORE) {
-				window.showHighscore(highscore);						//Visar highscore
+				window.showNewComponent(highscore, "Highscore");		//Visar highscore
 				waitForNewState(highscore);								//Ligger kvar här tills användaren exits med ESC
 			}
 		}

@@ -12,10 +12,11 @@ public class Highscore extends GameComponent {
 
 	private static int boardWidth;
 	private static int boardHeight;
-	public static int selectedItem;
+	private static int selectedItem;
 	private STATE State;
 	
 	public Highscore(int boardWidth, int boardHeight) {
+		title = "Highscore";
 		this.boardWidth = boardWidth;
 		this.boardHeight = boardHeight;
 		State = STATE.HIGHSCORE;
@@ -33,12 +34,6 @@ public class Highscore extends GameComponent {
 		g.setColor(Color.blue);
 		g.fillRect(10, 10, boardWidth, boardHeight);
 		
-		//Skapar ett antal typsnitt som senare anvands
-		Font font0 = new Font("arial", Font.BOLD, 70);
-		Font font1 = new Font("arial", Font.PLAIN, 50);
-		Font font2 = new Font("arial", Font.PLAIN, 40);
-		Font font3 = new Font("arial", Font.PLAIN, 30);
-		
 		g.setColor(Color.white);
 		
 		//Rubriken
@@ -47,11 +42,11 @@ public class Highscore extends GameComponent {
 		
 		//Underrubriken
 		g.setFont(font2);
-		g.drawString("Exit to main menu with esc-key", (boardWidth-(textWidth("Exit to main menu with ESC-key", font2)))/2, 160);
+		g.drawString("Exit to main menu with ESC-key", (boardWidth-(textWidth("Exit to main menu with ESC-key", font2)))/2, 160);
 		
 		//Rutor med text
-		paintRectangle(g, "Two player mode", font1, boardHeight*3/8, -1);
-		paintRectangle(g, "Single player mode", font1, boardHeight*5/8, -1);
+		paintRectangle(g, "Two player mode", font1, boardHeight*3/8, -1, selectedItem, boardWidth);
+		paintRectangle(g, "Single player mode", font1, boardHeight*5/8, -1, selectedItem, boardWidth);
 		g.setFont(font3);
 		g.drawString("Namn: antal brickor lagda till vinst", (boardWidth-(textWidth("Namn: antal brickor lagda till vinst", font3)))/2, boardHeight*3/8 + 100);
 		g.drawString("Namn: antal brickor lagda till vinst", (boardWidth-(textWidth("Namn: antal brickor lagda till vinst", font3)))/2, boardHeight*5/8 + 100);
@@ -69,41 +64,6 @@ public class Highscore extends GameComponent {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		
-	}
-	
-	/**
-	 * Returnerar hojden pa texten som skickas med den font som ocksa skickas med
-	 */
-	private static int textHeight(String text, Font font) {
-		AffineTransform affinetransform = new AffineTransform();     
-		FontRenderContext frc = new FontRenderContext(affinetransform,true,true);
-		int textheight = (int)(font.getStringBounds(text, frc).getHeight());
-		return textheight;
-	}
-	/**
-	 * Returnerar bredden pa texten som skickas med den font som ocksa skickas med
-	 */
-	private static int textWidth(String text, Font font) {
-		AffineTransform affinetransform = new AffineTransform();     
-		FontRenderContext frc = new FontRenderContext(affinetransform,true,true);
-		int textwidth = (int)(font.getStringBounds(text, frc).getWidth());
-		return textwidth;
-	}
-	
-	/**
-	 * Malar ut rektanglar med text inuti centrerade p� spelplanen
-	 * 
-	 */
-	private static void paintRectangle(Graphics g, String text, Font font, int y, int item) {
-		if(item == selectedItem) {
-			g.setColor(Color.darkGray);
-			g.fillRect(((boardWidth-textWidth(text, font))/2)-10, y-10, textWidth(text, font)+20, textHeight(text, font)+20);			
-		}
-		
-		g.setColor(Color.white);
-		g.drawRect(((boardWidth-textWidth(text, font))/2)-10, y-10, textWidth(text, font)+20, textHeight(text, font)+20);
-		g.setFont(font);
-		g.drawString(text, (boardWidth-(textWidth(text, font)))/2, y-10+(textHeight(text, font)));
 	}
 
 	@Override

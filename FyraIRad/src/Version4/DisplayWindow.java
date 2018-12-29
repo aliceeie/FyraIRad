@@ -11,28 +11,12 @@ public class DisplayWindow {
 	    window.setBounds(400, 100, boardWidth + 30, boardHeight + 60);
 	}
 	
-	public void showGame(GameBoard gameBoard) {
+	public void showNewComponent(GameComponent component, String title) {
 		window.setVisible(false);
-		window.setTitle("FyraIRad - Two player mode");
-		window.setContentPane(gameBoard);
-	    System.out.println("gameBoard visas.");
-		window.setVisible(true);
-		
-	}
-	
-	public void showMenu(Menu menu) {
-		window.setVisible(false);
-		window.setTitle("FyraIRad - Main menu");
-		window.setContentPane(menu);
-	    System.out.println("menu visas.");
+		window.setTitle("FyraIRad - " + title);
+		window.setContentPane(component);
+	    System.out.println(component.toString() + " visas.");
 		window.setVisible(true);
 	}
 	
-	public void showHighscore(Highscore highscore) {
-		window.setVisible(false);
-		window.setTitle("FyraIRad - Highscore");
-		window.setContentPane(highscore);
-	    System.out.println("highscore visas.");
-		window.setVisible(true);
-	}
 }

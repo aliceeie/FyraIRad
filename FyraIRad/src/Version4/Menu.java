@@ -15,12 +15,13 @@ import javax.swing.Timer;
 
 public class Menu extends GameComponent {
 	
-	private static int boardWidth;		//Skapar variabler for att gora klassen mer generell
+	private static int boardWidth;
 	private static int boardHeight;
-	public static int selectedItem;
+	private static int selectedItem;
 	private STATE State;
 	
 	public Menu(int boardWidth, int boardHeight) {
+		title = "Menu";
 		this.boardWidth = boardWidth;
 		this.boardHeight = boardHeight;
 		selectedItem = 0;
@@ -33,12 +34,8 @@ public class Menu extends GameComponent {
 	 * selectedItem = 1 -> play one player
 	 * selectedItem = 2 -> check highscore
 	 */
-	public void setSelectedItem(int selectedItem) {
+	private void setSelectedItem(int selectedItem) {
 		Menu.selectedItem = selectedItem;
-	}
-	
-	public int getSelectedItem() {
-		return selectedItem;
 	}
 	
 	private enum STATE {
@@ -51,11 +48,6 @@ public class Menu extends GameComponent {
 		g.setColor(Color.blue);
 		g.fillRect(10, 10, boardWidth, boardHeight);
 		
-		//Skapar ett antal typsnitt som senare anvands
-		Font font0 = new Font("arial", Font.BOLD, 70);
-		Font font1 = new Font("arial", Font.PLAIN, 50);
-		Font font2 = new Font("arial", Font.PLAIN, 40);
-		
 		g.setColor(Color.white);
 		
 		//Rubriken
@@ -67,44 +59,9 @@ public class Menu extends GameComponent {
 		g.drawString("Select with enter-key", (boardWidth-(textWidth("Select with enter-key", font2)))/2, 160);
 		
 		//Rutor med text
-		paintRectangle(g, "Play against friend", font1, 220, 0);
-		paintRectangle(g, "Play against computer", font1, 320, 1);
-		paintRectangle(g, "Highscore", font1, 420, 2);
-	}
-	
-	/**
-	 * Malar ut rektanglar med text inuti centrerade p� spelplanen
-	 * 
-	 */
-	private static void paintRectangle(Graphics g, String text, Font font, int y, int item) {
-		if(item == selectedItem) {
-			g.setColor(Color.darkGray);
-			g.fillRect(((boardWidth-textWidth(text, font))/2)-10, y-10, textWidth(text, font)+20, textHeight(text, font)+20);			
-		}
-		
-		g.setColor(Color.white);
-		g.drawRect(((boardWidth-textWidth(text, font))/2)-10, y-10, textWidth(text, font)+20, textHeight(text, font)+20);
-		g.setFont(font);
-		g.drawString(text, (boardWidth-(textWidth(text, font)))/2, y-10+(textHeight(text, font)));
-	}
-	
-	/**
-	 * Returnerar hojden pa texten som skickas med den font som ocksa skickas med
-	 */
-	private static int textHeight(String text, Font font) {
-		AffineTransform affinetransform = new AffineTransform();     
-		FontRenderContext frc = new FontRenderContext(affinetransform,true,true);
-		int textheight = (int)(font.getStringBounds(text, frc).getHeight());
-		return textheight;
-	}
-	/**
-	 * Returnerar bredden pa texten som skickas med den font som ocksa skickas med
-	 */
-	private static int textWidth(String text, Font font) {
-		AffineTransform affinetransform = new AffineTransform();     
-		FontRenderContext frc = new FontRenderContext(affinetransform,true,true);
-		int textwidth = (int)(font.getStringBounds(text, frc).getWidth());
-		return textwidth;
+		paintRectangle(g, "Play against friend", font1, 220, 0, selectedItem, boardWidth);
+		paintRectangle(g, "Play against computer", font1, 320, 1, selectedItem, boardWidth);
+		paintRectangle(g, "Highscore", font1, 420, 2, selectedItem, boardWidth);
 	}
 	
 	@Override

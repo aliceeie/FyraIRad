@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Line2D;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JComponent;
@@ -20,22 +21,31 @@ import javax.swing.Timer;
  */
 public class GameBoard extends GameComponent {
 	
+	private static int boardWidth;
+	private static int boardHeight;
 	private Circle[][] arrayOfCircles;
 	private STATE State;
 	private boolean noWinner;
 	private int[] infoWinnerLocation;
 	private Players currentPlayer;
 	private int selectedRow;
-
-	public GameBoard(Players currentPlayer) {
+	
+	public GameBoard(int state, Players currentPlayer, int boardWidth, int boardHeight) {
+		this.boardWidth = boardWidth;
+		this.boardHeight = boardHeight;
+		title = "GameBoard";
 		initializeKeyListener();
 		arrayOfCircles = new Circle[7][6];
 		createWhiteCircles();
 		noWinner = true;
-		this.currentPlayer = currentPlayer;
-		this.State = STATE.GAME;
 		selectedRow = 0;
 		infoWinnerLocation = new int[4];
+		this.currentPlayer = currentPlayer;
+		if(state == 1) {
+			this.State = STATE.GAME;
+		} else {
+			this.State = STATE.COMPGAME;
+		}
 	}
 	
 	private enum STATE {
@@ -66,17 +76,17 @@ public class GameBoard extends GameComponent {
 		return y;
 	}
 	
-	public boolean markCircle() {
-		int column = getNextEmptyPlace(selectedRow);
-		if(!arrayOfCircles[selectedRow][column].setColor(currentPlayer.getCurrentColor())) {		//markerar crikeln med rätt färg
+	private boolean markCircle(int column) {
+		int row = getNextEmptyPlace(column);
+		if(!arrayOfCircles[column][row].setColor(currentPlayer.getColor())) {		//markerar crikeln med rätt färg
 			return false;				//Avbryter om en kolumn är full
 		}
-		System.out.println(currentPlayer + " la en bricka: Row: " + selectedRow +
-				". Column: " + column + ". Color: " + currentPlayer.getCurrentColor());
+		System.out.println(currentPlayer + " la en bricka: Column: " + selectedRow +
+				". Row: " + row + ". Color: " + currentPlayer.getColor());
 		return true;
 	}
 	
-	public boolean checkForWinner() {
+	private boolean checkForWinner() {
 		return (checkHorizontal() || checkVertically() || 
 				checkRightDiagonal() || checkLeftDiagonal());	//Returnerar true om det finns en vinnare någonstans
 	}
@@ -114,7 +124,7 @@ public class GameBoard extends GameComponent {
 					infoWinnerLocation[1] = arrayOfCircles[x][y].getY();
 					infoWinnerLocation[2] = arrayOfCircles[x+3*xAlter][y+3*yAlter].getX();
 					infoWinnerLocation[3] = arrayOfCircles[x+3*xAlter][y+3*yAlter].getY();
-					changeTurn(); 		//För att vinnande spelare ska bli rätt när det skriv ut
+					changeTurn(); 		//För att vinnande spelare ska bli rätt när det skrivs ut
 					return true;
 				}
 			}
@@ -127,6 +137,8 @@ public class GameBoard extends GameComponent {
 		g.setColor(Color.blue);
 		g.fillRect(10, 10, 700, 600);						//Malar rektangeln som är spelplanen
 		
+		paintSideBar(g);
+		
 		if(noWinner) {
 			paintSelectedRow(g);
 			paintCircles(g);
@@ -135,7 +147,29 @@ public class GameBoard extends GameComponent {
 			paintHighlightWinner(g, infoWinnerLocation[0]+40, infoWinnerLocation[1]+40,
 					infoWinnerLocation[2]+40, infoWinnerLocation[3]+40);
 			paintCircles(g);
-			paintWinnerText(g);
+		}
+	}
+	
+	private void paintSideBar(Graphics g) {
+		int x = 730;
+		int y = 40;
+		//Background
+		g.setColor(Color.darkGray);
+		g.fillRect(x-10, 10, boardWidth-710, boardHeight-(boardHeight-600));
+		//Key commands
+		g.setFont(font3);
+		g.setColor(Color.white);
+		g.drawString("ESC to exit", x, y);
+		//Turn
+		g.drawString("Your turn", x, y*3);
+		g.drawString(currentPlayer.getName(), x, y*4);
+		//Statistics
+		g.drawString("Statistics", x, y*6);
+		//Ev. winner
+		if(!noWinner) {
+			g.drawString("Winner is", x, y*11);
+			g.setColor(currentPlayer.getColor());
+			g.drawString(currentPlayer.getName() + "!", x, y*12);
 		}
 	}
 	
@@ -148,7 +182,7 @@ public class GameBoard extends GameComponent {
 	}
 	
 	private void paintSelectedRow(Graphics g) {
-		if (currentPlayer.getCurrentColor() == Color.red) {
+		if (currentPlayer.getColor() == Color.red) {
 			g.setColor(Color.cyan);
 		}
 		else {
@@ -157,34 +191,21 @@ public class GameBoard extends GameComponent {
 		g.fillRect(20 + 100*selectedRow, 20, 80, 580);	//Målar ut den rektangeln som visar den aktuellt valda kolumnen
 	}
 	
-	private void paintHighlightWinner(Graphics g, int x1, int y1, int x2, int y2) {
+	private void paintHighlightWinner(Graphics g, int x1, int y1, int x2, int y2) {		//Målar rektangel där vinsten är
 		Graphics2D g2 = (Graphics2D) g;
 
 		g2.setColor(Color.cyan);
 		g2.setStroke(new BasicStroke(80));
-		g2.draw(new Line2D.Float(x1, y1, x2, y2));		//Målar rektangel där vinsten är
-		
-	}
-	
-	private void paintWinnerText(Graphics g) {			//Malar ut en text som sager vem som vunnit			
-		Graphics2D g2 = (Graphics2D) g;
-		
-		g2.setColor(Color.black);
-		g2.fillRect(100, 200, 500, 180);
-		Font font = new Font("SansSerif", Font.PLAIN, 100);
-		g2.setFont(font);
-		g2.setColor(currentPlayer.getCurrentColor());
-		g2.drawString("Du vann!", 150, 320);
+		g2.draw(new Line2D.Float(x1, y1, x2, y2));
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
-		
-		if (State == STATE.GAME) {				//Om vi ar i tvåspellaget
+		if (State == STATE.GAME) {				//Om vi ar i tvåspelarlaget
 			gameKeyPressed(keyCode);
 		}
-		else if (State == STATE.COMPGAME) {
+		else if (State == STATE.COMPGAME) {		//OM vi är i enspelarläget
 			compGameKeyPressed(keyCode);
 		}
 	}
@@ -218,9 +239,6 @@ public class GameBoard extends GameComponent {
 				}
 				System.out.println("Ett hopp at vanster!");
 			}
-			if (keyCode == KeyEvent.VK_DOWN) {
-				System.out.println("=====================================\nEtt drag registrerat!");
-			}
 		}
 		if (currentPlayer == Players.player2) {				//Player1 spelar med asd-tangenterna
 			if (keyCode == KeyEvent.VK_D) {
@@ -239,9 +257,6 @@ public class GameBoard extends GameComponent {
 				}
 				System.out.println("Ett hopp at vanster!");
 			}
-			if (keyCode == KeyEvent.VK_S) {
-				System.out.println("=====================================\nEtt drag registrerat!");
-			}
 		}
 		if (keyCode == KeyEvent.VK_ESCAPE) {
 			System.out.println("ESC key was pressed.");
@@ -250,7 +265,7 @@ public class GameBoard extends GameComponent {
 	}
 	
 	private void compGameKeyPressed(int keyCode) {
-		if (currentPlayer == Players.player1) {
+		if (currentPlayer == Players.player1) {				//Player1 spelar med piltangenterna
 			if (keyCode == KeyEvent.VK_RIGHT) {
 				if (selectedRow == 6) {
 					selectedRow = 0;
@@ -267,12 +282,9 @@ public class GameBoard extends GameComponent {
 				}
 				System.out.println("Ett hopp at vanster!");
 			}
-			if (keyCode == KeyEvent.VK_DOWN) {
-				System.out.println("=====================================\nEtt drag registrerat!");
-			}
-			if (keyCode == KeyEvent.VK_ESCAPE) {
-				State = STATE.MENU;
-			}
+		}
+		if (keyCode == KeyEvent.VK_ESCAPE) {
+			State = STATE.MENU;
 		}
 	}
 	
@@ -280,16 +292,13 @@ public class GameBoard extends GameComponent {
 		if (currentPlayer == Players.player1) {	
 			if (keyCode == KeyEvent.VK_DOWN) {				
 				System.out.println("Slappte nerknappen!");
-				if(noWinner)
-					markCircle();
+				if(noWinner && markCircle(selectedRow))
 					changeTurn();
 			}
-		}
-		else if (currentPlayer == Players.player2) {
+		} else if (currentPlayer == Players.player2) {
 			if (keyCode == KeyEvent.VK_S) {				
 				System.out.println("Slappte nerknappen!");
-				if(noWinner)
-					markCircle();
+				if(noWinner && markCircle(selectedRow))
 					changeTurn();
 			}
 		}
@@ -299,26 +308,35 @@ public class GameBoard extends GameComponent {
 		if (currentPlayer == Players.player1) { 
 			if (keyCode == KeyEvent.VK_DOWN) {				
 				System.out.println("Slappte nerknappen!");
-				markCircle();
-				if(noWinner)
+				if(noWinner && markCircle(selectedRow)) {
 					changeTurn();
+				}
 			}
 		}
-		else if (currentPlayer == Players.player2) {
-
-			//H�r ska datorn g�ra sitt drag
-			
+	}
+	
+	private void compMakeMove() {
+		try {
+			TimeUnit.SECONDS.sleep(1);			//Väntar så att datorn inte lägger direkt
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Random randomizer = new Random();
+		if(noWinner && currentPlayer == Players.player2 && markCircle(randomizer.nextInt(7))) {
+			changeTurn();
 		}
 	}
 
 	@Override
 	public int getNewState() {
-		State = STATE.GAME;
 		System.out.println("Väntar på vinst...");
-		while(State == STATE.GAME) {
+		while(State == STATE.GAME || State == STATE.COMPGAME) {
 			//Väntar på att någon vinner
 			if(noWinner) {
 				checkForWinner();
+				if(State == STATE.COMPGAME && currentPlayer == Players.player2) {
+					compMakeMove();		//Datorn gör sitt drag
+				}
 			}
 			try {
 				TimeUnit.MILLISECONDS.sleep(100);	//Systemet väntar (sleeps) i 100 millisek. för att programmet hänger sig annars...
