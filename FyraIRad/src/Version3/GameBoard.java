@@ -241,6 +241,7 @@ class GameBoard extends JComponent implements Drawable, ActionListener, KeyListe
 				}
 			}
 		}
+		
 		/**
 		 * Tar hand om alla inmatningar d� vi �r i tv�spelarl�get
 		 * 
