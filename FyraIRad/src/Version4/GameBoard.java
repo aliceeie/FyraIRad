@@ -70,7 +70,8 @@ public class GameBoard extends GameComponent {
 	
 	private int getNextEmptyPlace(int row) {
 		int y = 5;
-		while(y > 0 && !(arrayOfCircles[row][y].getColor().equals(Color.white))){		//Om platsen dar vi ska satta brickan inte ar vit maste vi satta den pa en plats ovanfor (lagre y-varde)
+		//Om platsen dar vi ska satta brickan inte ar vit maste vi satta den pa en plats ovanfor (lagre y-varde)
+		while(y > 0 && !(arrayOfCircles[row][y].getColor().equals(Color.white))){
 			y--;
 		}
 		return y;
@@ -78,7 +79,7 @@ public class GameBoard extends GameComponent {
 	
 	private boolean markCircle(int column) {
 		int row = getNextEmptyPlace(column);
-		if(!arrayOfCircles[column][row].setColor(currentPlayer.getColor())) {		//markerar crikeln med rätt färg
+		if(!arrayOfCircles[column][row].setColor(currentPlayer.getColor())) {
 			return false;				//Avbryter om en kolumn är full
 		}
 		System.out.println(currentPlayer + " la en bricka: Column: " + selectedRow +
