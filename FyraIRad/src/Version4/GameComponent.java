@@ -18,10 +18,11 @@ public abstract class GameComponent extends JComponent implements Drawable, Acti
 	protected String title;
 	protected Timer timer;
 	//Skapar ett antal typsnitt som senare anvands
-	protected Font font0 = new Font("arial", Font.BOLD, 70);
-	protected Font font1 = new Font("arial", Font.PLAIN, 50);
-	protected Font font2 = new Font("arial", Font.PLAIN, 40);
-	protected Font font3 = new Font("arial", Font.PLAIN, 30);
+	protected Font fontB70 = new Font("arial", Font.BOLD, 70);
+	protected Font fontP50 = new Font("arial", Font.PLAIN, 50);
+	protected Font fontP40 = new Font("arial", Font.PLAIN, 40);
+	protected Font fontP30 = new Font("arial", Font.PLAIN, 30);
+	protected static int[] highscoreMove = new int[5];			//Variabel för att spara bästa antal drag
 	
 	@Override
 	public abstract void paint(Graphics g);
@@ -49,6 +50,11 @@ public abstract class GameComponent extends JComponent implements Drawable, Acti
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
 	}
+	
+	protected static void saveHighscore(int[] highscore) {
+		GameComponent.highscoreMove = highscore;
+	}
+	
 	
 	/**
 	 * Malar ut rektanglar med text inuti centrerade pï¿½ spelplanen

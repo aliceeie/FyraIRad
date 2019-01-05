@@ -41,6 +41,8 @@ public class GameBoard extends GameComponent {
 		selectedRow = 0;
 		infoWinnerLocation = new int[4];
 		this.currentPlayer = currentPlayer;
+		Players.player1.resetMoves();
+		Players.player2.resetMoves();
 		if(state == 1) {
 			this.State = STATE.GAME;
 		} else {
@@ -52,6 +54,19 @@ public class GameBoard extends GameComponent {
 		MENU, GAME, COMPGAME					//Meny-, tvï¿½spelare-, enspelarelï¿½ge
 	};
 	
+	protected void checkHighscore() {
+		for (int x=0; x<=4; x++) {
+			if (currentPlayer.getMoves() < highscoreMove[x] || highscoreMove[x] == 0) { //Denna logik fungerar inte
+				if(x<=3) {
+					highscoreMove[x+1] = highscoreMove[x];
+//					highscoreNames[x+1] = highscoreNames[x];
+				}
+				highscoreMove[x] = currentPlayer.getMoves();
+//				highscoreNames[x] = currentPlayer.getCustomName();
+			}
+		}
+	}
+
 	private void changeTurn() {
 		if(currentPlayer == Players.player1) {
 			currentPlayer = Players.player2;
@@ -158,14 +173,20 @@ public class GameBoard extends GameComponent {
 		g.setColor(Color.darkGray);
 		g.fillRect(x-10, 10, boardWidth-710, boardHeight-(boardHeight-600));
 		//Key commands
-		g.setFont(font3);
+		g.setFont(fontP30);
 		g.setColor(Color.white);
 		g.drawString("ESC to exit", x, y);
 		//Turn
 		g.drawString("Your turn", x, y*3);
 		g.drawString(currentPlayer.getName(), x, y*4);
+		//Vilka tangenter som ska användas
+		if(currentPlayer == Players.player1)
+			g.drawString("Use arrows", x, y*5);
+		if(currentPlayer == Players.player2 && State == STATE.GAME)
+			g.drawString("Use asd-keys", x, y*5);
 		//Statistics
-		g.drawString("Statistics", x, y*6);
+		g.drawString("Statistics", x, y*7);
+		g.drawString("Moves: " + (Integer.toString(currentPlayer.getMoves())), x, y*8);
 		//Ev. winner
 		if(!noWinner) {
 			g.drawString("Winner is", x, y*11);
@@ -225,38 +246,18 @@ public class GameBoard extends GameComponent {
 	private void gameKeyPressed(int keyCode) {
 		if (currentPlayer == Players.player1) {				//Player1 spelar med piltangenterna
 			if (keyCode == KeyEvent.VK_RIGHT) {
-				if (selectedRow == 6) {
-					selectedRow = 0;
-				} else {
-					selectedRow += 1;
-				}
-				System.out.println("Ett hopp at hoger!");
+				addSelectedRow();
 			}
 			if (keyCode == KeyEvent.VK_LEFT) {
-				if (selectedRow == 0) {
-					selectedRow = 6;
-				} else {
-					selectedRow -= 1;
-				}
-				System.out.println("Ett hopp at vanster!");
+				reduceSelectedRow();
 			}
 		}
 		if (currentPlayer == Players.player2) {				//Player1 spelar med asd-tangenterna
 			if (keyCode == KeyEvent.VK_D) {
-				if (selectedRow == 6) {
-					selectedRow = 0;
-				} else {
-					selectedRow += 1;
-				}
-				System.out.println("Ett hopp at hoger!");
+				addSelectedRow();
 			}
 			if (keyCode == KeyEvent.VK_A) {
-				if (selectedRow == 0) {
-					selectedRow = 6;
-				} else {
-					selectedRow -= 1;
-				}
-				System.out.println("Ett hopp at vanster!");
+				reduceSelectedRow();
 			}
 		}
 		if (keyCode == KeyEvent.VK_ESCAPE) {
@@ -268,20 +269,10 @@ public class GameBoard extends GameComponent {
 	private void compGameKeyPressed(int keyCode) {
 		if (currentPlayer == Players.player1) {				//Player1 spelar med piltangenterna
 			if (keyCode == KeyEvent.VK_RIGHT) {
-				if (selectedRow == 6) {
-					selectedRow = 0;
-				} else {
-					selectedRow += 1;
-				}
-				System.out.println("Ett hopp at hoger!");
+				addSelectedRow();
 			}
 			if (keyCode == KeyEvent.VK_LEFT) {
-				if (selectedRow == 0) {
-					selectedRow = 6;
-				} else {
-					selectedRow -= 1;
-				}
-				System.out.println("Ett hopp at vanster!");
+				reduceSelectedRow();
 			}
 		}
 		if (keyCode == KeyEvent.VK_ESCAPE) {
@@ -289,17 +280,37 @@ public class GameBoard extends GameComponent {
 		}
 	}
 	
+	private void addSelectedRow() {
+		if (selectedRow == 6) {
+			selectedRow = 0;
+		} else {
+			selectedRow += 1;
+		}
+		System.out.println("Ett hopp at hoger!");
+	}
+	
+	private void reduceSelectedRow() {
+		if (selectedRow == 0) {
+			selectedRow = 6;
+		} else {
+			selectedRow -= 1;
+		}
+		System.out.println("Ett hopp at vanster!");
+	}
+	
 	private void gameKeyReleased(int keyCode) {
 		if (currentPlayer == Players.player1) {	
 			if (keyCode == KeyEvent.VK_DOWN) {				
 				System.out.println("Slappte nerknappen!");
 				if(noWinner && markCircle(selectedRow))
+					currentPlayer.addMove();
 					changeTurn();
 			}
 		} else if (currentPlayer == Players.player2) {
 			if (keyCode == KeyEvent.VK_S) {				
 				System.out.println("Slappte nerknappen!");
 				if(noWinner && markCircle(selectedRow))
+					currentPlayer.addMove();
 					changeTurn();
 			}
 		}
@@ -310,6 +321,7 @@ public class GameBoard extends GameComponent {
 			if (keyCode == KeyEvent.VK_DOWN) {				
 				System.out.println("Slappte nerknappen!");
 				if(noWinner && markCircle(selectedRow)) {
+					currentPlayer.addMove();
 					changeTurn();
 				}
 			}
@@ -324,6 +336,7 @@ public class GameBoard extends GameComponent {
 		}
 		Random randomizer = new Random();
 		if(noWinner && currentPlayer == Players.player2 && markCircle(randomizer.nextInt(7))) {
+			currentPlayer.addMove();
 			changeTurn();
 		}
 	}
@@ -338,6 +351,13 @@ public class GameBoard extends GameComponent {
 				if(State == STATE.COMPGAME && currentPlayer == Players.player2) {
 					compMakeMove();		//Datorn gÃ¶r sitt drag
 				}
+				
+		//När vi har hittat en vinnare vill vi spara hur många drag som använts i int[] highscoreMove
+
+//				}else {
+//				checkHighscore();
+//				System.out.println("spelet har sparats");
+//				return 1;
 			}
 			try {
 				TimeUnit.MILLISECONDS.sleep(100);	//Systemet vÃ¤ntar (sleeps) i 100 millisek. fÃ¶r att programmet hÃ¤nger sig annars...

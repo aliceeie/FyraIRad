@@ -43,17 +43,17 @@ public class Menu extends GameComponent {
 		g.setColor(Color.white);
 		
 		//Rubriken
-		g.setFont(font0);
-		g.drawString("FOUR IN A ROW", (boardWidth-(textWidth("FOUR IN A ROW", font0)))/2, 100);
+		g.setFont(fontB70);
+		g.drawString("FOUR IN A ROW", (boardWidth-(textWidth("FOUR IN A ROW", fontB70)))/2, 100);
 		
 		//Underrubriken
-		g.setFont(font2);
-		g.drawString("Select with enter-key", (boardWidth-(textWidth("Select with enter-key", font2)))/2, 160);
+		g.setFont(fontP40);
+		g.drawString("Select with enter-key", (boardWidth-(textWidth("Select with enter-key", fontP40)))/2, 160);
 		
 		//Rutor med text
-		paintRectangle(g, "Play against friend", font1, 220, 0, selectedItem, boardWidth);
-		paintRectangle(g, "Play against computer", font1, 320, 1, selectedItem, boardWidth);
-		paintRectangle(g, "Highscore", font1, 420, 2, selectedItem, boardWidth);
+		paintRectangle(g, "Play against friend", fontP50, 220, 0, selectedItem, boardWidth);
+		paintRectangle(g, "Play against computer", fontP50, 320, 1, selectedItem, boardWidth);
+		paintRectangle(g, "Highscore", fontP50, 420, 2, selectedItem, boardWidth);
 	}
 	
 	@Override
@@ -122,5 +122,4 @@ public class Menu extends GameComponent {
 		}
 		return -1;
 	}
-	
 }

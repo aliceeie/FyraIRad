@@ -12,6 +12,8 @@ public class FyraIRad{
 	private Highscore highscore;
 	private STATE State;
 	private boolean gameIsRunning = true;
+//	private String[] highscoreNames;
+//	private int[] highscoreMoves;
 
 	public void start() {
 		
@@ -20,7 +22,7 @@ public class FyraIRad{
 		while(gameIsRunning) {
 			
 			if (State == STATE.MENU) {
-				window.showNewComponent(menu, "Menu");				//Visar menu
+				window.showNewComponent(menu, "Menu");					//Visar menu
 				waitForNewState(menu);									//Ligger kvar här tills användaren valt i menu
 			} 
 			else if (State == STATE.GAME){
