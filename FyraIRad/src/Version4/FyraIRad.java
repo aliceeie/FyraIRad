@@ -15,7 +15,6 @@ public class FyraIRad{
 	private String link2p = "/home/aliek496/tddc77/TDDC77/FyraIRad/FyraIRad/src/Version4/Highscore2p.txt";
 	private String link1p = "/home/aliek496/tddc77/TDDC77/FyraIRad/FyraIRad/src/Version4/Highscore1p.txt";
 //	private String[] highscoreNames;
-//	private int[] highscoreMoves;
 
 	public void start() {
 		
@@ -32,8 +31,6 @@ public class FyraIRad{
 				gameBoard = new GameBoard(1, randomizeStartPlayer(), boardWidth, boardHeight);
 				window.showNewComponent(gameBoard, "Two player game");				//Visar gameBoard
 				waitForNewState(gameBoard);								//Ligger kvar i detta läge tills användaren exits med ESC
-				//Kollar om highscoren ska skrivas över
-			
 				highscore.setNewHighscore(gameBoard.getWinningMoves(), 0, link2p);
 			} 
 			else if(State == STATE.COMPGAME) {
@@ -41,7 +38,6 @@ public class FyraIRad{
 				gameBoard = new GameBoard(2, randomizeStartPlayer(), boardWidth, boardHeight);
 				window.showNewComponent(gameBoard, "Single player game");				//Visar gameBoard
 				waitForNewState(gameBoard);								//Ligger kvar i detta läge tills användaren exits med ESC
-				
 				highscore.setNewHighscore(gameBoard.getWinningMoves(), 1, link1p);
 			} 
 			else if (State == STATE.HIGHSCORE) {

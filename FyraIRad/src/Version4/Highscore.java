@@ -58,7 +58,7 @@ public class Highscore extends GameComponent {
 		g.setFont(fontP50);
 		g.drawString("Two player mode", (y-(textWidth("Two player mode", fontP50)))/2, boardHeight*3/8);
 		g.setFont(fontP30);
-		g.drawString("Name: number of moves", (y-(textWidth("Name: number of moves", fontP30)))/2, boardHeight*7/16);
+		g.drawString("Number of moves", (y-(textWidth("Number of moves", fontP30)))/2, boardHeight*7/16);
 		
 		for(int x=0; x<5; x++) {
 			g.drawString(x+1 + ". " + Integer.toString(highscoreMove[0][x]), 30, boardHeight*(x+9)/16);
@@ -71,7 +71,7 @@ public class Highscore extends GameComponent {
 		g.setFont(fontP50);
 		g.drawString("Single player mode", (y+(y-(textWidth("Single player mode", fontP50)))/2), boardHeight*3/8);
 		g.setFont(fontP30);
-		g.drawString("Name: number of moves", (y+(y-(textWidth("Name: number of moves", fontP30)))/2), boardHeight*7/16);
+		g.drawString("Number of moves", (y+(y-(textWidth("Number of moves", fontP30)))/2), boardHeight*7/16);
 
 		for(int x=0; x<5; x++) {
 			g.drawString(x+1 + ". " + Integer.toString(highscoreMove[1][x]), y+20, boardHeight*(x+9)/16);
