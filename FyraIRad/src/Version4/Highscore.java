@@ -3,6 +3,12 @@ package Version4;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class Highscore extends GameComponent {
@@ -12,19 +18,22 @@ public class Highscore extends GameComponent {
 	private static int selectedItem;
 	private STATE State;
 //	private String[] highscoreNames;
+	private static int[][] highscoreMove = new int[2][5];			//Variabel fï¿½r att spara bï¿½sta antal drag
 
 	
-	public Highscore(int boardWidth, int boardHeight) {
+	public Highscore(int boardWidth, int boardHeight, String  link2p, String link1p) {
 		title = "Highscore";
 		this.boardWidth = boardWidth;
 		this.boardHeight = boardHeight;
 		State = STATE.HIGHSCORE;
 		selectedItem = 0;
 		initializeKeyListener();
+		load(link2p, 0);
+		load(link1p, 1);
 	}
 	
 	private enum STATE {
-		MENU, HIGHSCORE					//Meny- eller highscorelï¿½ge är de states som är möjliga att nå
+		MENU, HIGHSCORE					//Meny- eller highscorelï¿½ge ï¿½r de states som ï¿½r mï¿½jliga att nï¿½
 	};
 	
 	@Override
@@ -44,7 +53,7 @@ public class Highscore extends GameComponent {
 		g.setFont(fontP40);
 		g.drawString("Exit to main menu with ESC-key", (boardWidth-(textWidth("Exit to main menu with ESC-key", fontP40)))/2, 160);
 		
-		//Vänstra kolumnen
+		//Vï¿½nstra kolumnen
 		y = boardWidth/2;
 		g.setFont(fontP50);
 		g.drawString("Two player mode", (y-(textWidth("Two player mode", fontP50)))/2, boardHeight*3/8);
@@ -52,24 +61,80 @@ public class Highscore extends GameComponent {
 		g.drawString("Name: number of moves", (y-(textWidth("Name: number of moves", fontP30)))/2, boardHeight*7/16);
 		
 		for(int x=0; x<5; x++) {
-			g.drawString(x+1 + ". " + Integer.toString(highscoreMove[x]), 30, boardHeight*(x+9)/16);
+			g.drawString(x+1 + ". " + Integer.toString(highscoreMove[0][x]), 30, boardHeight*(x+9)/16);
 		}
 		
 		//Linje i mitten
 		g.drawLine(boardWidth/2, boardHeight*5/16, boardWidth/2, boardHeight*15/16);
 		
-		//Högra kolumnen
+		//Hï¿½gra kolumnen
 		g.setFont(fontP50);
 		g.drawString("Single player mode", (y+(y-(textWidth("Single player mode", fontP50)))/2), boardHeight*3/8);
 		g.setFont(fontP30);
 		g.drawString("Name: number of moves", (y+(y-(textWidth("Name: number of moves", fontP30)))/2), boardHeight*7/16);
 
 		for(int x=0; x<5; x++) {
-			g.drawString(x+1 + ". " + ("---"), y+20, boardHeight*(x+9)/16);
+			g.drawString(x+1 + ". " + Integer.toString(highscoreMove[1][x]), y+20, boardHeight*(x+9)/16);
 		}
 		
 	}
+	
+	public void setNewHighscore(int newHighscore, int mode, String link){
+		if (newHighscore >= highscoreMove[mode][4]) {
+			return;
+		}
+		int x=4;
+		while (x>=0){
+			if (newHighscore >= highscoreMove[mode][x]){
+				break;				
+			}
+			x--;
+		}
+		x++;
+		if (x != 4) {
+			System.out.println("det funkar" + x);
+			for (int i = 3; i >= x; i--) {
+				highscoreMove[mode][i+1] = highscoreMove[mode][i];
+			}
+			highscoreMove[mode][x] = newHighscore;
+			save(link, mode);
+			load(link, mode);
+		}
+	}
 
+	public void load(String link, int mode) {
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(link));
+			while (reader.ready()) {
+				for (int x=0; x<5; x++){
+					highscoreMove[mode][x] = Integer.parseInt(reader.readLine());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void save(String link, int mode) {
+		try {
+			File file = new File(link);
+			file.delete();
+			FileOutputStream fos = new FileOutputStream(file);
+			file.createNewFile();
+			
+			for(int i = 0; i<5; i++){
+				String content = Integer.toString(highscoreMove[mode][i]) + "\n";
+				byte[] contentInBytes = content.getBytes();					//GÃ¶r om content-texten till bytes fÃ¶r att kunna skicka in det i outputStreamen
+				fos.write(contentInBytes);				
+			}
+			fos.flush();												//Skickar outputStreamen till filen
+			fos.close();												//StÃ¤nger outputStreamen
+				
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();

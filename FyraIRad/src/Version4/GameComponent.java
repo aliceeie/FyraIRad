@@ -22,7 +22,6 @@ public abstract class GameComponent extends JComponent implements Drawable, Acti
 	protected Font fontP50 = new Font("arial", Font.PLAIN, 50);
 	protected Font fontP40 = new Font("arial", Font.PLAIN, 40);
 	protected Font fontP30 = new Font("arial", Font.PLAIN, 30);
-	protected static int[] highscoreMove = new int[5];			//Variabel för att spara bästa antal drag
 	
 	@Override
 	public abstract void paint(Graphics g);
@@ -51,9 +50,7 @@ public abstract class GameComponent extends JComponent implements Drawable, Acti
         setFocusTraversalKeysEnabled(false);
 	}
 	
-	protected static void saveHighscore(int[] highscore) {
-		GameComponent.highscoreMove = highscore;
-	}
+	
 	
 	
 	/**

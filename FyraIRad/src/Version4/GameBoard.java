@@ -29,6 +29,7 @@ public class GameBoard extends GameComponent {
 	private int[] infoWinnerLocation;
 	private Players currentPlayer;
 	private int selectedRow;
+	private int winningMoves;
 	
 	public GameBoard(int state, Players currentPlayer, int boardWidth, int boardHeight) {
 		this.boardWidth = boardWidth;
@@ -43,6 +44,7 @@ public class GameBoard extends GameComponent {
 		this.currentPlayer = currentPlayer;
 		Players.player1.resetMoves();
 		Players.player2.resetMoves();
+		winningMoves = 100;
 		if(state == 1) {
 			this.State = STATE.GAME;
 		} else {
@@ -53,19 +55,6 @@ public class GameBoard extends GameComponent {
 	private enum STATE {
 		MENU, GAME, COMPGAME					//Meny-, tvï¿½spelare-, enspelarelï¿½ge
 	};
-	
-	protected void checkHighscore() {
-		for (int x=0; x<=4; x++) {
-			if (currentPlayer.getMoves() < highscoreMove[x] || highscoreMove[x] == 0) { //Denna logik fungerar inte
-				if(x<=3) {
-					highscoreMove[x+1] = highscoreMove[x];
-//					highscoreNames[x+1] = highscoreNames[x];
-				}
-				highscoreMove[x] = currentPlayer.getMoves();
-//				highscoreNames[x] = currentPlayer.getCustomName();
-			}
-		}
-	}
 
 	private void changeTurn() {
 		if(currentPlayer == Players.player1) {
@@ -141,11 +130,18 @@ public class GameBoard extends GameComponent {
 					infoWinnerLocation[2] = arrayOfCircles[x+3*xAlter][y+3*yAlter].getX();
 					infoWinnerLocation[3] = arrayOfCircles[x+3*xAlter][y+3*yAlter].getY();
 					changeTurn(); 		//FÃ¶r att vinnande spelare ska bli rÃ¤tt nÃ¤r det skrivs ut
+					if (!(State == STATE.COMPGAME && currentPlayer == Players.player2)) {
+						winningMoves = currentPlayer.getMoves();
+					}			
 					return true;
 				}
 			}
 		}
 		return false;
+	}
+	
+	public int getWinningMoves() {
+		return winningMoves;
 	}
 
 	@Override
@@ -179,7 +175,7 @@ public class GameBoard extends GameComponent {
 		//Turn
 		g.drawString("Your turn", x, y*3);
 		g.drawString(currentPlayer.getName(), x, y*4);
-		//Vilka tangenter som ska användas
+		//Vilka tangenter som ska anvï¿½ndas
 		if(currentPlayer == Players.player1)
 			g.drawString("Use arrows", x, y*5);
 		if(currentPlayer == Players.player2 && State == STATE.GAME)
@@ -302,16 +298,18 @@ public class GameBoard extends GameComponent {
 		if (currentPlayer == Players.player1) {	
 			if (keyCode == KeyEvent.VK_DOWN) {				
 				System.out.println("Slappte nerknappen!");
-				if(noWinner && markCircle(selectedRow))
+				if(noWinner && markCircle(selectedRow)) {
 					currentPlayer.addMove();
 					changeTurn();
+				}
 			}
 		} else if (currentPlayer == Players.player2) {
 			if (keyCode == KeyEvent.VK_S) {				
 				System.out.println("Slappte nerknappen!");
-				if(noWinner && markCircle(selectedRow))
+				if(noWinner && markCircle(selectedRow)) {
 					currentPlayer.addMove();
 					changeTurn();
+				}
 			}
 		}
 	}
@@ -351,13 +349,6 @@ public class GameBoard extends GameComponent {
 				if(State == STATE.COMPGAME && currentPlayer == Players.player2) {
 					compMakeMove();		//Datorn gÃ¶r sitt drag
 				}
-				
-		//När vi har hittat en vinnare vill vi spara hur många drag som använts i int[] highscoreMove
-
-//				}else {
-//				checkHighscore();
-//				System.out.println("spelet har sparats");
-//				return 1;
 			}
 			try {
 				TimeUnit.MILLISECONDS.sleep(100);	//Systemet vÃ¤ntar (sleeps) i 100 millisek. fÃ¶r att programmet hÃ¤nger sig annars...
