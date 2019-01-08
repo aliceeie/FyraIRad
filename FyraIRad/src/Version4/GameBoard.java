@@ -204,10 +204,10 @@ public class GameBoard extends GameComponent {
 	
 	private void paintSelectedRow(Graphics g) {
 		if (currentPlayer.getColor() == Color.red) {
-			g.setColor(Color.cyan);
+			g.setColor(new Color(255, 204, 204));
 		}
 		else {
-			g.setColor(Color.lightGray);
+			g.setColor(new Color(255, 255, 204));
 		}
 		g.fillRect(20 + 100*selectedRow, 20, 80, 580);	//Målar ut den rektangeln som visar den aktuellt valda kolumnen
 	}
