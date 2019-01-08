@@ -21,8 +21,6 @@ import javax.swing.Timer;
  */
 public class GameBoard extends GameComponent {
 	
-	private static int boardWidth;
-	private static int boardHeight;
 	private Circle[][] arrayOfCircles;
 	private STATE State;
 	private boolean noWinner;

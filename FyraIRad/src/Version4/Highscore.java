@@ -13,11 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Highscore extends GameComponent {
 
-	private static int boardWidth;
-	private static int boardHeight;
-	private static int selectedItem;
 	private STATE State;
-//	private String[] highscoreNames;
 	private static int[][] highscoreMove = new int[2][5];			//Variabel f�r att spara b�sta antal drag
 
 	
@@ -26,7 +22,6 @@ public class Highscore extends GameComponent {
 		this.boardWidth = boardWidth;
 		this.boardHeight = boardHeight;
 		State = STATE.HIGHSCORE;
-		selectedItem = 0;
 		initializeKeyListener();
 		load(link2p, 0);
 		load(link1p, 1);
