@@ -15,8 +15,8 @@ import javax.swing.Timer;
 
 public abstract class GameComponent extends JComponent implements Drawable, ActionListener, KeyListener {
 
-	protected static int boardWidth;
-	protected static int boardHeight;
+	protected int boardWidth;
+	protected int boardHeight;
 	protected String title;
 	protected Timer timer;
 	//Skapar ett antal typsnitt som senare anvands

@@ -119,12 +119,11 @@ public class Highscore extends GameComponent {
 			
 			for(int i = 0; i<5; i++){
 				String content = Integer.toString(highscoreMove[mode][i]) + "\n";
-				byte[] contentInBytes = content.getBytes();					//Gör om content-texten till bytes för att kunna skicka in det i outputStreamen
+				byte[] contentInBytes = content.getBytes();				//Gör om content-texten till bytes för att kunna skicka in det i outputStreamen
 				fos.write(contentInBytes);				
 			}
 			fos.flush();												//Skickar outputStreamen till filen
 			fos.close();												//Stänger outputStreamen
-				
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

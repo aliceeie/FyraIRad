@@ -62,7 +62,7 @@ public class GameBoard extends GameComponent {
 		}
 	}
 		
-	private void createWhiteCircles() {						//Skapar vita cirklar som fungerar som bakgrund innan de fylls med rod eller gul farg
+	private void createWhiteCircles() {
 		for(int y = 0; y < 6; y++){
 			for(int x = 0; x < 7; x++){
 				arrayOfCircles[x][y] = new Circle(Color.white, 20 + 100*x, 20 + 100*y, 80);
@@ -127,7 +127,7 @@ public class GameBoard extends GameComponent {
 					infoWinnerLocation[1] = arrayOfCircles[x][y].getY();
 					infoWinnerLocation[2] = arrayOfCircles[x+3*xAlter][y+3*yAlter].getX();
 					infoWinnerLocation[3] = arrayOfCircles[x+3*xAlter][y+3*yAlter].getY();
-					changeTurn(); 		//För att vinnande spelare ska bli rätt när det skrivs ut
+					changeTurn(); 						//För att vinnande spelare ska bli rätt när det skrivs ut
 					if (!(State == STATE.COMPGAME && currentPlayer == Players.player2)) {
 						winningMoves = currentPlayer.getMoves();
 					}			
@@ -166,21 +166,26 @@ public class GameBoard extends GameComponent {
 		//Background
 		g.setColor(Color.darkGray);
 		g.fillRect(x-10, 10, boardWidth-710, boardHeight-(boardHeight-600));
+		
 		//Key commands
 		g.setFont(fontP30);
 		g.setColor(Color.white);
 		g.drawString("ESC to exit", x, y);
+		
 		//Turn
 		g.drawString("Your turn", x, y*3);
 		g.drawString(currentPlayer.getName(), x, y*4);
+		
 		//Vilka tangenter som ska anv�ndas
 		if(currentPlayer == Players.player1)
 			g.drawString("Use arrows", x, y*5);
 		if(currentPlayer == Players.player2 && State == STATE.GAME)
 			g.drawString("Use asd-keys", x, y*5);
+		
 		//Statistics
 		g.drawString("Statistics", x, y*7);
 		g.drawString("Moves: " + (Integer.toString(currentPlayer.getMoves())), x, y*8);
+		
 		//Ev. winner
 		if(!noWinner) {
 			g.drawString("Winner is", x, y*11);

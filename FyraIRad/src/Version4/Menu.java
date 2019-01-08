@@ -7,8 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 public class Menu extends GameComponent {
 	
-	private static int boardWidth;
-	private static int boardHeight;
 	private static int selectedItem;
 	private STATE State;
 	
@@ -40,9 +38,8 @@ public class Menu extends GameComponent {
 		g.setColor(Color.blue);
 		g.fillRect(10, 10, boardWidth, boardHeight);
 		
-		g.setColor(Color.white);
-		
 		//Rubriken
+		g.setColor(Color.white);
 		g.setFont(fontB70);
 		g.drawString("FOUR IN A ROW", (boardWidth-(textWidth("FOUR IN A ROW", fontB70)))/2, 100);
 		
@@ -66,9 +63,6 @@ public class Menu extends GameComponent {
 	public void keyReleased(KeyEvent e) {
 	}
 	
-	/**
-	 * Tar hand om alla inmatningar d� vi �r i meny-l�get
-	 */
 	private void menuKeyPressed(int keyCode) {
 		if (keyCode == KeyEvent.VK_DOWN) {
 			if (selectedItem == 2) {
