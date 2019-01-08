@@ -56,7 +56,9 @@ public class Highscore extends GameComponent {
 		g.drawString("Number of moves", (y-(textWidth("Number of moves", fontP30)))/2, boardHeight*7/16);
 		
 		for(int x=0; x<5; x++) {
-			g.drawString(x+1 + ". " + Integer.toString(highscoreMove[0][x]), 30, boardHeight*(x+9)/16);
+			if (highscoreMove[0][x] != 100) {
+				g.drawString(x+1 + ". " + Integer.toString(highscoreMove[0][x]), 30, boardHeight*(x+9)/16);
+			}
 		}
 		
 		//Linje i mitten
@@ -69,9 +71,10 @@ public class Highscore extends GameComponent {
 		g.drawString("Number of moves", (y+(y-(textWidth("Number of moves", fontP30)))/2), boardHeight*7/16);
 
 		for(int x=0; x<5; x++) {
-			g.drawString(x+1 + ". " + Integer.toString(highscoreMove[1][x]), y+20, boardHeight*(x+9)/16);
+			if (highscoreMove[1][x] != 100) {
+				g.drawString(x+1 + ". " + Integer.toString(highscoreMove[1][x]), y+20, boardHeight*(x+9)/16);
+			}
 		}
-		
 	}
 	
 	public void setNewHighscore(int newHighscore, int mode, String link){
@@ -97,7 +100,7 @@ public class Highscore extends GameComponent {
 		}
 	}
 
-	public void load(String link, int mode) {
+	private void load(String link, int mode) {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(link));
 			while (reader.ready()) {
@@ -110,7 +113,7 @@ public class Highscore extends GameComponent {
 		}
 	}
 	
-	public void save(String link, int mode) {
+	private void save(String link, int mode) {
 		try {
 			File file = new File(link);
 			file.delete();
